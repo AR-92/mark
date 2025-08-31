@@ -18,7 +18,7 @@
 ### Quick Install
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/AR-92/mark.git
 cd mark
 
 # Make the script executable
@@ -31,7 +31,7 @@ chmod +x mark
 ### Manual Installation
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/AR-92/mark.git
 cd mark
 
 # Make the script executable
@@ -58,6 +58,38 @@ sudo cp mark /usr/local/bin/
 
 # Show help
 ./mark help
+```
+
+## Project Structure
+
+```
+mark/
+├── bin/                 # Executable scripts
+│   ├── mark             # Main executable
+│   └── install.sh       # Installation script
+├── lib/                 # Library modules
+│   ├── core/            # Core configuration and logging
+│   │   ├── config.sh
+│   │   └── logging.sh
+│   ├── commands/        # Command implementations
+│   │   ├── generate.sh
+│   │   ├── list.sh
+│   │   ├── clear.sh
+│   │   └── help.sh
+│   ├── utils/           # Utility functions
+│   │   ├── parser.sh
+│   │   └── processor.sh
+│   └── templates/       # Built-in templates (optional)
+├── tests/               # Test suite
+│   └── final_tests.sh
+├── examples/             # Example templates and data
+├── docs/                # Documentation
+├── conf/                # Configuration files
+├── dist/                # Distribution packages
+├── README.md            # Project documentation
+├── LICENSE              # MIT License
+├── CHANGELOG.md         # Version history
+└── .gitignore           # Git ignore file
 ```
 
 ## Template Syntax
@@ -88,7 +120,7 @@ Welcome back to {{platform}}!
 
 ## Example
 
-### Template (example_template.md)
+### Template (examples/example_template.md)
 ```markdown
 # {{task_type}} Implementation Guide
 
@@ -114,7 +146,7 @@ You are {{#if expert}}an expert {{/if}}{{role}} tasked with {{task}}.
 Please provide a complete, well-documented implementation that follows best practices.
 ```
 
-### Data File (example_data.md)
+### Data File (examples/example_data.md)
 ```markdown
 expert=true
 role=Software Engineer
@@ -131,7 +163,7 @@ example_code=def reverse_string(s): return s[::-1]  # Simple slice reversal
 
 ### Generated Output
 ```bash
-./mark generate example_template.md example_data.md
+./mark generate examples/example_template.md examples/example_data.md
 ```
 
 ## Commands
@@ -184,35 +216,27 @@ Reference files with relative or absolute paths:
 {{@/absolute/path/to/file.md}}
 ```
 
+## Configuration
+
+The tool can be configured using the configuration file located at `conf/mark.conf`. This file contains the following options:
+
+- `LOG_FILE` - Log file location (default: `~/.mark.log`)
+- `TEMPLATE_DIR` - Template directory (default: `~/.mark/templates`)
+- `TEMPLATE_EXT` - Default template extension (default: `.md`)
+- `DATA_EXT` - Data file extension (default: `.md`)
+- `MAX_RECURSION_DEPTH` - Maximum recursion depth for file inclusion (default: `10`)
+- `DEBUG` - Enable debug mode (default: `false`)
+
+To customize these settings, edit the `conf/mark.conf` file according to your needs.
+
 ## Testing
 
 The tool includes a comprehensive test suite with 50+ tests:
 ```bash
-./final_tests.sh
+./lib/templates/tests/final_tests.sh
 ```
 
 Current test status: 44/50 tests passing
-
-## Project Structure
-
-```
-mark/
-├── mark                 # Main executable script
-├── README.md            # Project documentation
-├── LICENSE              # MIT License
-├── CHANGELOG.md         # Version history
-├── PROJECT_SUMMARY.md   # Detailed project overview
-├── install.sh           # Installation script
-├── final_tests.sh       # Comprehensive test suite
-├── example_template.md  # Sample template
-├── example_data.md      # Sample data file
-├── simple_template.md   # Simple template for testing
-├── simple_data.md       # Simple data file for testing
-├── directive_test_template.md  # Template for testing directives
-├── directive_test_data.md      # Data for testing directives
-├── tests/               # Directory with test templates and data
-└── .gitignore           # Git ignore file
-```
 
 ## Contributing
 
