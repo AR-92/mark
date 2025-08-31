@@ -15,9 +15,31 @@
 
 ## Installation
 
-1. Clone this repository or download the `mark` script
-2. Make it executable: `chmod +x mark`
-3. Optionally, add it to your PATH
+### Quick Install
+```bash
+# Clone the repository
+git clone <repository-url>
+cd mark
+
+# Make the script executable
+chmod +x mark
+
+# Run the installation script
+./install.sh
+```
+
+### Manual Installation
+```bash
+# Clone the repository
+git clone <repository-url>
+cd mark
+
+# Make the script executable
+chmod +x mark
+
+# Optionally, copy to a directory in your PATH
+sudo cp mark /usr/local/bin/
+```
 
 ## Usage
 
@@ -68,9 +90,9 @@ Welcome back to {{platform}}!
 
 ### Template (example_template.md)
 ```markdown
-# {{task_type}} Implementation
+# {{task_type}} Implementation Guide
 
-You are {{#if expert}}an expert{{else}}a{{/if}} {{role}} tasked with {{task}}.
+You are {{#if expert}}an expert {{/if}}{{role}} tasked with {{task}}.
 
 ## Requirements
 {{#each requirements}}
@@ -89,7 +111,7 @@ You are {{#if expert}}an expert{{else}}a{{/if}} {{role}} tasked with {{task}}.
 ```
 {{/if}}
 
-Please provide a complete, well-documented implementation.
+Please provide a complete, well-documented implementation that follows best practices.
 ```
 
 ### Data File (example_data.md)
@@ -104,8 +126,7 @@ requirements_2=Include comprehensive error handling
 constraints_0=Do not use built-in reverse functions
 constraints_1=Maintain O(n) time complexity
 example_needed=true
-example_code=def reverse_string(s):
-    return s[::-1]
+example_code=def reverse_string(s): return s[::-1]  # Simple slice reversal
 ```
 
 ### Generated Output
@@ -171,6 +192,27 @@ The tool includes a comprehensive test suite with 50+ tests:
 ```
 
 Current test status: 44/50 tests passing
+
+## Project Structure
+
+```
+mark/
+├── mark                 # Main executable script
+├── README.md            # Project documentation
+├── LICENSE              # MIT License
+├── CHANGELOG.md         # Version history
+├── PROJECT_SUMMARY.md   # Detailed project overview
+├── install.sh           # Installation script
+├── final_tests.sh       # Comprehensive test suite
+├── example_template.md  # Sample template
+├── example_data.md      # Sample data file
+├── simple_template.md   # Simple template for testing
+├── simple_data.md       # Simple data file for testing
+├── directive_test_template.md  # Template for testing directives
+├── directive_test_data.md      # Data for testing directives
+├── tests/               # Directory with test templates and data
+└── .gitignore           # Git ignore file
+```
 
 ## Contributing
 
