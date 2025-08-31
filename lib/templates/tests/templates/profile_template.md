@@ -1,2 +1,6 @@
-{{name}} is a {{role}} who specializes in {{skill}}.
-They have {{years}} years of experience.
+{{name}} is a {{role}}.
+They have {{experience}} years of experience.
+Their skills include:
+{{#each skills}}
+- {{this}}
+{{/each}}

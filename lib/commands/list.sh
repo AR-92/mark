@@ -9,6 +9,11 @@ list_prompts() {
         local count
         count=$(grep -c "Generated prompt" "$LOG_FILE" 2>/dev/null || echo "0")
         
+        # Make sure count is a valid number
+        if ! [[ "$count" =~ ^[0-9]+$ ]]; then
+            count=0
+        fi
+        
         if [[ "$count" -gt 0 ]]; then
             grep "Generated prompt" "$LOG_FILE" | tail -10
         else

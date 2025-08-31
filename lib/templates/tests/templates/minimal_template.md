@@ -1,3 +1,5 @@
-# Minimal Example
+# Minimal Template
 
-{{#if expert}}Expert{{/if}} {{role}}
+This is a minimal template for testing basic functionality.
+
+Hello {{name}}!

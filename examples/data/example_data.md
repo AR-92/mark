@@ -1,5 +1,6 @@
 expert=true
 role=Software Engineer
+task_type=String Manipulation
 task=implementing a function that reverses a string without using built-in methods
 language=Python
 requirements_0=Handle edge cases (empty strings, single characters)

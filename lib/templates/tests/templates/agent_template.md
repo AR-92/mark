@@ -1,13 +1,11 @@
-You are an expert {{role}} specializing in {{domain}}.
+You are an expert {{role}}.
+
 Your task is to {{task}}.
 
-Context:
-{{context}}
-
-Constraints:
-{{#each constraints}}
+{{#each skills}}
 - {{this}}
 {{/each}}
 
-Expected output format:
-{{output_format}}
+{{#if experience_level}}
+Experience level: {{experience_level}}
+{{/if}}

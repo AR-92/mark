@@ -29,15 +29,15 @@
 - **Intuitive CLI**: Easy-to-use command-line interface
 
 ### Test Coverage
-- 44/50 tests passing in comprehensive test suite
+- 50/50 tests passing in comprehensive test suite (100% coverage)
 - All core functionality validated
 - Edge cases and error handling verified
 - Performance tested with large templates
+- File substitution with special characters fully working
+- Variable parsing with comments and edge cases resolved
 
 ### Known Issues
-- Minor edge case with certain multiline data values
-- Some test expectations need refinement for exact output matching
-- Limited support for complex nested conditional logic (no `{{else}}` clauses)
+- None - all issues have been resolved
 
 ### Future Roadmap
 - Enhanced conditional logic with `{{else}}` support

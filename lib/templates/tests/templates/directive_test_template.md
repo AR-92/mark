@@ -1,7 +1,19 @@
+# Directive Test Template
+
+This template tests various directive combinations.
+
 {{#if active}}
-User is active
+Active user: {{name}}
+{{else}}
+Inactive user: {{name}}
 {{/if}}
 
-{{#each items}}
+Requirements:
+{{#each requirements}}
 - {{this}}
 {{/each}}
+
+{{#if debug_mode}}
+Debug information:
+{{debug_info}}
+{{/if}}

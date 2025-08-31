@@ -1,20 +1,22 @@
-Generate a {{document_type}} for {{project_name}}.
-{{#if confidential}}
-CONFIDENTIAL
-{{/if}}
+# {{document_type}}
 
-Project Lead: {{lead}}
-Team Size: {{team_size}}
+## Project Overview
+{{project_description}}
 
-{{#each objectives}}
-Objective {{@index}}: {{this}}
+## Team Members
+{{#each team_members}}
+- {{this}}
 {{/each}}
 
-Timeline:
-{{#each milestones}}
-- {{this.name}}: {{this.date}}
-{{/each}}
+## Timeline
+Start Date: {{start_date}}
+End Date: {{end_date}}
 
 {{#if budget}}
 Budget: ${{budget}}
 {{/if}}
+
+## Deliverables
+{{#each deliverables}}
+- {{this}}
+{{/each}}

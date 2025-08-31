@@ -53,19 +53,13 @@ The main entry point is `bin/mark`, which routes commands to their respective im
 
 ## Testing
 
-### Running Tests
-```bash
-# Run basic tests
-./tests/all_tests.sh
+To run the complete test suite:
 
-# Run comprehensive tests
-./lib/templates/tests/final_tests.sh
+```bash
+./final_tests.sh
 ```
 
-### Adding New Tests
-1. Add test cases to the appropriate test script
-2. Create any necessary test templates or data files in `lib/templates/tests/`
-3. Run tests to verify functionality
+This will run all 50 tests across 6 test modules and verify that all functionality is working correctly.
 
 ## Extending Functionality
 
@@ -77,5 +71,5 @@ The main entry point is `bin/mark`, which routes commands to their respective im
 ### Adding New Template Features
 1. Modify the parser in `lib/utils/parser.sh`
 2. Update the processor in `lib/utils/processor.sh`
-3. Add tests to `lib/templates/tests/final_tests.sh`
+3. Add tests to `final_tests.sh`
 4. Document the feature in `docs/user_guide.md`

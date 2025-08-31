@@ -4,7 +4,11 @@ The function should:
 - {{this}}
 {{/each}}
 
-Example usage:
+{{#if include_example}}
+Example:
 ```{{language}}
-{{example}}
+{{example_code}}
 ```
+{{/if}}
+
+Return the result as specified in the requirements.

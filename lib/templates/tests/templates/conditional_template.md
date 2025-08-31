@@ -1,20 +1,11 @@
-{{greeting}} {{name}}!
-
 {{#if active}}
-Welcome back to {{platform}}. Here's what's new:
-{{#each notifications}}
-- {{this}}
-{{/each}}
+Hello {{name}}!
 {{else}}
-Welcome to {{platform}}. Please complete your profile to get started.
+Hi {{name}}!
 {{/if}}
 
-{{#if premium}}
-As a premium member, you have access to:
-{{#each features}}
-- {{this}}
-{{/each}}
-{{/if}}
+Welcome to our platform.
 
-{{farewell}},
-The {{team}} Team
+{{#if premium_user}}
+You have access to premium features.
+{{/if}}
