@@ -1,0 +1,270 @@
+#!/bin/bash
+
+# mark - AI prompt templating tool with support for #each and #if directives
+
+# Default values
+LOG_FILE="${HOME}/.mark.log"
+TEMPLATE_DIR="${HOME}/.mark/templates"
+
+# Ensure template directory exists
+mkdir -p "$TEMPLATE_DIR"
+
+# Logging function
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> "$LOG_FILE"
+}
+
+# Help function
+show_help() {
+    cat << 'EOF'
+mark - AI prompt templating tool
+
+USAGE:
+    mark <COMMAND> [OPTIONS]
+
+COMMANDS:
+    generate <template> [data]    Generate prompt from template
+    list                          List recently generated prompts
+    clear                         Clear all logs
+    help                          Show this help message
+
+FEATURES:
+    - Placeholders: {{variable_name}}
+    - File substitution: {{@file_path}}
+    - Data files: key=value format
+    - Environment variables
+    - Conditional blocks: {{#if condition}}...{{/if}}
+    - Loop blocks: {{#each array}}...{{/each}}
+
+EXAMPLES:
+    mark generate my_template.md
+    mark generate my_template.md data.md
+    mark list
+    mark clear
+    mark help
+EOF
+}
+
+# Function to parse simple key=value data file
+parse_data_file() {
+    local data_file="$1"
+    
+    if [[ -n "$data_file" && -f "$data_file" ]]; then
+        while IFS='=' read -r key value || [[ -n "$key" ]]; do
+            # Skip comments and empty lines
+            [[ "$key" =~ ^#.*$ || -z "$key" ]] && continue
+            # Export variables so they can be accessed
+            export "$key=$value"
+        done < "$data_file"
+    fi
+}
+
+# Function to handle #if conditional blocks
+process_if_blocks() {
+    local content="$1"
+    
+    # Process {{#if condition}}...{{/if}} blocks
+    while [[ "$content" =~ \{\{#if[[:space:]]+([^}]+)\}\}(.*)\{\{/if\}\} ]]; do
+        local condition="${BASH_REMATCH[1]}"
+        local block_content="${BASH_REMATCH[2]}"
+        
+        # Check if condition is truthy (non-empty and not "false")
+        local condition_value=""
+        if [[ -n "${!condition}" ]]; then
+            condition_value="${!condition}"
+        fi
+        
+        local replacement=""
+        if [[ -n "$condition_value" && "$condition_value" != "false" ]]; then
+            # Condition is true, include the block content
+            replacement="$block_content"
+        else
+            # Condition is false, exclude the block content
+            replacement=""
+        fi
+        
+        # Replace the entire block
+        content="${content//\{\{#if $condition\}\}$block_content\{\{\/if\}\}/$replacement}"
+    done
+    
+    echo "$content"
+}
+
+# Function to handle #each loop blocks
+process_each_blocks() {
+    local content="$1"
+    
+    # Process {{#each array}}...{{/each}} blocks
+    while [[ "$content" =~ \{\{#each[[:space:]]+([^}]+)\}\}(.*)\{\{/each\}\} ]]; do
+        local array_name="${BASH_REMATCH[1]}"
+        local block_template="${BASH_REMATCH[2]}"
+        
+        # Look for indexed items (array_name_0, array_name_1, etc.)
+        local replacement=""
+        local index=0
+        
+        # Build the variable name and check if it exists
+        local var_name="${array_name}_${index}"
+        while [[ -n "${!var_name}" ]]; do
+            local item_value="${!var_name}"
+            
+            # Replace {{this}} with the current item
+            local item_replaced="$block_template"
+            item_replaced="${item_replaced//\{\{this\}\}/$item_value}"
+            
+            # Also replace {{@index}} with the current index
+            item_replaced="${item_replaced//\{\{@index\}\}/$index}"
+            
+            replacement="$replacement$item_replaced"
+            
+            # Increment index and build next variable name
+            index=$((index + 1))
+            var_name="${array_name}_${index}"
+        done
+        
+        # If no indexed items found, check if there's a direct value
+        if [[ -z "$replacement" && -n "${!array_name}" ]]; then
+            local item_value="${!array_name}"
+            local item_replaced="$block_template"
+            item_replaced="${item_replaced//\{\{this\}\}/$item_value}"
+            replacement="$item_replaced"
+        fi
+        
+        # Replace the entire block
+        content="${content//\{\{#each $array_name\}\}$block_template\{\{\/each\}\}/$replacement}"
+    done
+    
+    echo "$content"
+}
+
+# Generate command
+generate_prompt() {
+    local template_file="$1"
+    local data_file="$2"
+    
+    # Check if template file exists
+    if [[ ! -f "$template_file" ]]; then
+        log "ERROR: Template file '$template_file' not found"
+        echo "Error: Template file '$template_file' not found" >&2
+        return 1
+    fi
+    
+    # Read template
+    local template_content
+    template_content=$(cat "$template_file")
+    
+    # Process data file if provided
+    parse_data_file "$data_file"
+    
+    # Process template content
+    
+    # Handle #each loop blocks first
+    template_content=$(process_each_blocks "$template_content")
+    
+    # Handle #if conditional blocks
+    template_content=$(process_if_blocks "$template_content")
+    
+    # Handle file substitution: {{@file_path}}
+    while [[ "$template_content" =~ \{\{(@[^}]+)\}\} ]]; do
+        local file_path="${BASH_REMATCH[1]#@}"
+        local file_content=""
+        
+        # Check if file exists and read its content
+        if [[ -f "$file_path" ]]; then
+            file_content=$(cat "$file_path")
+        else
+            file_content="[File not found: $file_path]"
+        fi
+        
+        # Replace the placeholder with file content
+        template_content="${template_content//\{\{@$file_path\}\}/$file_content}"
+    done
+    
+    # Handle regular variable substitution: {{variable_name}}
+    # Process environment variables and data file values
+    local iteration=0
+    local max_iterations=100
+    while [[ "$template_content" =~ \{\{([^}]+)\}\} ]] && [[ $iteration -lt $max_iterations ]]; do
+        local var_name="${BASH_REMATCH[1]}"
+        local var_value=""
+        
+        # Check environment variables
+        if [[ -n "${!var_name}" ]]; then
+            var_value="${!var_name}"
+        fi
+        
+        # Escape special characters in the replacement value to prevent issues
+        local placeholder="{{${var_name}}}"
+        local escaped_value="${var_value//\\/\\\\}"
+        # escaped_value="${escaped_value//\&/\\&}"  # Removed ampersand escaping
+        # escaped_value="${escaped_value//\//\\/}"  # Removed slash escaping
+        
+        # Replace ALL occurrences globally
+        template_content="${template_content//"$placeholder"/$escaped_value}"
+        
+        iteration=$((iteration + 1))
+    done
+    
+    # Output generated prompt
+    echo "$template_content"
+    log "Generated prompt from template: $template_file"
+}
+
+# List command
+list_prompts() {
+    if [[ -f "$LOG_FILE" ]] && [[ -s "$LOG_FILE" ]]; then
+        # Count the number of lines containing "Generated prompt"
+        local count
+        count=$(grep -c "Generated prompt" "$LOG_FILE" 2>/dev/null || echo "0")
+        
+        if [[ "$count" -gt 0 ]]; then
+            grep "Generated prompt" "$LOG_FILE" | tail -10
+        else
+            echo "No prompts generated yet."
+        fi
+    else
+        echo "No prompts generated yet."
+    fi
+    log "Listed recent prompts"
+}
+
+# Clear command
+clear_logs() {
+    > "$LOG_FILE"
+    log "Logs cleared"
+    echo "Logs cleared successfully."
+}
+
+# Main command router
+case "${1:-}" in
+    generate)
+        if [[ -z "$2" ]]; then
+            log "ERROR: Missing template argument for generate command"
+            echo "Error: Missing template argument for generate command" >&2
+            exit 1
+        fi
+        generate_prompt "$2" "$3"
+        ;;
+    list)
+        list_prompts
+        ;;
+    clear)
+        clear_logs
+        ;;
+    help|--help|-h)
+        show_help
+        log "Help displayed"
+        ;;
+    "")
+        log "ERROR: No command provided"
+        echo "Error: No command provided" >&2
+        show_help
+        exit 1
+        ;;
+    *)
+        log "ERROR: Unknown command '$1'"
+        echo "Error: Unknown command '$1'" >&2
+        show_help
+        exit 1
+        ;;
+esac
