@@ -99,7 +99,7 @@ Tutorials are located in the `examples/tutorials` directory, with each level con
 You can run the tutorials using the provided script:
 
 ```bash
-./run_tutorials.sh
+./tests/run_tutorials.sh
 ```
 
 ## Configuration

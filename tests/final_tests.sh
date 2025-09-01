@@ -6,13 +6,16 @@
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Get the project root directory (parent of tests directory)
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
 # Run the complete test suite
 echo "========================================"
 echo "Running Complete Test Suite for mark"
 echo "========================================"
 
 # Run the modular test suite
-"$SCRIPT_DIR/lib/templates/tests/scripts/run_all_tests.sh"
+"$PROJECT_ROOT/lib/templates/tests/scripts/run_all_tests.sh"
 
 # Capture the exit code
 EXIT_CODE=$?

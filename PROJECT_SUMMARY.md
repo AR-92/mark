@@ -28,7 +28,7 @@
 1. **`mark`**: Main executable script
 2. **`README.md`**: Project documentation
 3. **`LICENSE`**: MIT License file
-4. **`final_tests.sh`**: Comprehensive test suite with 50+ tests
+4. **`tests/final_tests.sh`**: Comprehensive test suite with 50+ tests
 5. **`example_template.md`**: Sample template showcasing all features
 6. **`example_data.md`**: Sample data file for the example template
 7. **`examples/tutorials/`**: Comprehensive tutorials for all skill levels
@@ -67,7 +67,7 @@ Requirements:
 
 #### Running Tutorials
 ```bash
-./run_tutorials.sh
+./tests/run_tutorials.sh
 ```
 
 ### Learning Resources
@@ -117,8 +117,8 @@ Each test follows the format:
 
 1. Clone the repository
 2. Make the script executable: `chmod +x mark`
-3. Run the test suite: `./final_tests.sh`
-4. Run tutorials: `./run_tutorials.sh`
+3. Run the test suite: `./tests/final_tests.sh`
+4. Run tutorials: `./tests/run_tutorials.sh`
 5. Use the tool: `./mark generate template.md data.md`
 
 The tool requires no external dependencies beyond standard Unix utilities available on most systems.

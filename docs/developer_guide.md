@@ -56,7 +56,7 @@ The main entry point is `bin/mark`, which routes commands to their respective im
 To run the complete test suite:
 
 ```bash
-./final_tests.sh
+./tests/final_tests.sh
 ```
 
 This will run all 50 tests across 6 test modules and verify that all functionality is working correctly.
@@ -71,5 +71,5 @@ This will run all 50 tests across 6 test modules and verify that all functionali
 ### Adding New Template Features
 1. Modify the parser in `lib/utils/parser.sh`
 2. Update the processor in `lib/utils/processor.sh`
-3. Add tests to `final_tests.sh`
+3. Add tests to `tests/final_tests.sh`
 4. Document the feature in `docs/user_guide.md`

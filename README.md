@@ -185,7 +185,12 @@ mark/
 │   │   └── processor.sh
 │   └── templates/       # Built-in templates (optional)
 ├── tests/               # Test suite
-│   └── final_tests.sh
+│   └── tests/           # Test suite
+```
+
+See `examples/README.md` for detailed information about the example templates and tutorials.
+
+## Template Syntax
 ├── examples/             # Example templates and data
 │   ├── data/            # Example data files
 │   ├── templates/       # Example templates
@@ -461,14 +466,14 @@ Tutorials are located in the `examples/tutorials` directory, with each level con
 You can run the tutorials using the provided script:
 
 ```bash
-./run_tutorials.sh
+./tests/run_tutorials.sh
 ```
 
 ## Testing
 
 The tool includes a comprehensive test suite with 50+ tests:
 ```bash
-./final_tests.sh
+./tests/final_tests.sh
 ```
 
 Current test status: 50/50 tests passing
