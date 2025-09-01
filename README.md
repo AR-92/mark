@@ -187,14 +187,21 @@ mark/
 ├── tests/               # Test suite
 │   └── final_tests.sh
 ├── examples/             # Example templates and data
+│   ├── data/            # Example data files
+│   ├── templates/       # Example templates
+│   ├── tutorials/       # Comprehensive tutorials
+│   └── README.md        # Examples documentation
 ├── docs/                # Documentation
 ├── conf/                # Configuration files
 ├── dist/                # Distribution packages
 ├── README.md            # Project documentation
 ├── LICENSE              # MIT License
 ├── CHANGELOG.md         # Version history
+├── PROJECT_SUMMARY.md   # Project summary
 └── .gitignore           # Git ignore file
 ```
+
+See `examples/README.md` for detailed information about the example templates and tutorials.
 
 ## Template Syntax
 
@@ -285,9 +292,11 @@ prompt = generate_contextual_prompt(user_profile, current_task)
 ai_response = send_to_llm(prompt)
 ```
 
-## Example
+## Examples
 
-### Template (examples/example_template.md)
+### Basic Example
+
+#### Template (examples/templates/example_template.md)
 ```markdown
 # {{task_type}} Implementation Guide
 
@@ -313,7 +322,7 @@ You are {{#if expert}}an expert {{/if}}{{role}} tasked with {{task}}.
 Please provide a complete, well-documented implementation that follows best practices.
 ```
 
-### Data File (examples/example_data.md)
+#### Data File (examples/data/example_data.md)
 ```markdown
 expert=true
 role=Software Engineer
@@ -328,9 +337,22 @@ example_needed=true
 example_code=def reverse_string(s): return s[::-1]  # Simple slice reversal
 ```
 
-### Generated Output
+#### Generated Output
 ```bash
-./mark generate examples/example_template.md examples/example_data.md
+./mark generate examples/templates/example_template.md examples/data/example_data.md
+```
+
+### Project Plan Example
+
+#### Template (examples/templates/project_plan_template.md)
+A comprehensive project plan template that demonstrates advanced features of mark.
+
+#### Data File (examples/data/project_plan_data.md)
+Sample data for a software development project plan.
+
+#### Generated Output
+```bash
+./mark generate examples/templates/project_plan_template.md examples/data/project_plan_data.md
 ```
 
 ## Commands
@@ -424,6 +446,23 @@ The tool can be configured using the configuration file located at `conf/mark.co
 - `DEBUG` - Enable debug mode (default: `false`)
 
 To customize these settings, edit the `conf/mark.conf` file according to your needs.
+
+## Tutorials
+
+The tool includes comprehensive tutorials to help you master `mark` at all skill levels:
+
+- **Beginner**: Basic template creation and variable substitution
+- **Intermediate**: Conditional blocks, loop structures, and file inclusion
+- **Advanced**: Template inheritance, dynamic selection, and performance optimization
+- **Ninja**: Self-optimizing systems, AI agent orchestration, and cross-domain synthesis
+
+Tutorials are located in the `examples/tutorials` directory, with each level containing detailed documentation, example templates, and data files.
+
+You can run the tutorials using the provided script:
+
+```bash
+./run_tutorials.sh
+```
 
 ## Testing
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.1.0] - 2025-09-01
+
+### Added
+- Comprehensive tutorials for all skill levels (Beginner, Intermediate, Advanced, Ninja)
+- Tutorial templates and data files for hands-on learning
+- Tutorial test suite to verify tutorial examples
+- Integrated tutorial testing into main test suite
+- Updated documentation to reference tutorials
+
+### Features
+- **Structured Learning Path**: Step-by-step tutorials from basic to expert level
+- **Practical Examples**: Real-world templates and data files for each concept
+- **Progressive Complexity**: Tutorials build on previous concepts
+- **Self-Testing**: Automated tests to verify tutorial examples work correctly
+
 ## [1.0.0] - 2025-08-31
 
 ### Added

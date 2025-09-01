@@ -85,6 +85,23 @@ Welcome back to {{platform}}!
 {{/each}}
 ```
 
+## Tutorials
+
+The `mark` project includes comprehensive tutorials to help you master the tool at all skill levels:
+
+- **Beginner**: Basic template creation and variable substitution
+- **Intermediate**: Conditional blocks, loop structures, and file inclusion
+- **Advanced**: Template inheritance, dynamic selection, and performance optimization
+- **Ninja**: Self-optimizing systems, AI agent orchestration, and cross-domain synthesis
+
+Tutorials are located in the `examples/tutorials` directory, with each level containing detailed documentation, example templates, and data files.
+
+You can run the tutorials using the provided script:
+
+```bash
+./run_tutorials.sh
+```
+
 ## Configuration
 
 The tool can be configured using the configuration file located at `conf/mark.conf`. The following options are available:

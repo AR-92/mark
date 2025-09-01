@@ -14,6 +14,7 @@
 6. **Data Files**: Simple key=value format for defining template variables
 7. **Comprehensive Logging**: Full audit trail of all operations
 8. **CLI Interface**: Intuitive command-line interface with `generate`, `list`, `clear`, and `help` commands
+9. **Comprehensive Tutorials**: Step-by-step learning materials for all skill levels
 
 ### Technical Implementation
 
@@ -30,8 +31,9 @@
 4. **`final_tests.sh`**: Comprehensive test suite with 50+ tests
 5. **`example_template.md`**: Sample template showcasing all features
 6. **`example_data.md`**: Sample data file for the example template
-7. **`tests/`**: Directory containing various test templates and data files
-8. **`.gitignore`**: Git ignore file for temporary files
+7. **`examples/tutorials/`**: Comprehensive tutorials for all skill levels
+8. **`tests/`**: Directory containing various test templates and data files
+9. **`.gitignore`**: Git ignore file for temporary files
 
 ### Current Status
 
@@ -39,6 +41,7 @@ The tool is production-ready with the following statistics:
 - **50/50 tests passing** in the comprehensive test suite
 - **Core functionality fully operational**: Basic templating, file inclusion, conditional blocks, and loop blocks
 - **All features working correctly** with 100% test coverage
+- **Comprehensive tutorials available**: Beginner to ninja level learning materials
 
 ### Usage Examples
 
@@ -62,6 +65,26 @@ Requirements:
 {{/each}}
 ```
 
+#### Running Tutorials
+```bash
+./run_tutorials.sh
+```
+
+### Learning Resources
+
+The project includes comprehensive tutorials to help users master `mark`:
+
+- **Beginner Level**: Basic template creation and variable substitution
+- **Intermediate Level**: Conditional blocks, loop structures, and file inclusion
+- **Advanced Level**: Template inheritance, dynamic selection, and performance optimization
+- **Ninja Level**: Self-optimizing systems, AI agent orchestration, and cross-domain synthesis
+
+Each tutorial level contains:
+- Detailed documentation with examples
+- Template files for hands-on practice
+- Data files for testing
+- Automated tests to verify examples work correctly
+
 ### Future Enhancements
 
 Potential areas for future development:
@@ -81,6 +104,7 @@ The project includes a comprehensive test suite that validates:
 - Loop block processing
 - Edge cases and error handling
 - Performance with large templates
+- Tutorial examples functionality
 
 Each test follows the format:
 1. Setup test environment
@@ -94,6 +118,7 @@ Each test follows the format:
 1. Clone the repository
 2. Make the script executable: `chmod +x mark`
 3. Run the test suite: `./final_tests.sh`
-4. Use the tool: `./mark generate template.md data.md`
+4. Run tutorials: `./run_tutorials.sh`
+5. Use the tool: `./mark generate template.md data.md`
 
 The tool requires no external dependencies beyond standard Unix utilities available on most systems.
