@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# mark - Installation Script
+# mark - Fixed Installation Script
 
 echo "Installing mark AI prompt templating tool..."
 
@@ -54,7 +54,7 @@ case $choice in
             echo "Library files installed to ~/.local/lib/mark/"
             echo "Make sure ~/.local/bin is in your PATH"
             echo "Add this line to your ~/.bashrc or ~/.zshrc if needed:"
-            echo "export PATH=\"\$HOME/.local/bin:\$PATH\""
+            echo "export PATH=\"$HOME/.local/bin:\$PATH\""
         else
             echo "Failed to install mark locally"
             exit 1
