@@ -1,10 +1,14 @@
 #!/bin/bash
 
-# Test script for project plan example
+# mark - Project Plan Template Test
+# Test the project plan template with sample data
 
-echo "Testing project plan example..."
+# Get the absolute path of this script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Navigate up to the project root
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-cd /home/rana/Documents/Projects/mark
+cd "$PROJECT_ROOT"
 
 # Test project plan example
 echo "Testing project plan example..."

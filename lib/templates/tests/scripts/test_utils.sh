@@ -3,11 +3,16 @@
 # mark - Test Utilities
 # Common functions and configuration for all test modules
 
-# Test configuration
-MARK_SCRIPT="/home/rana/Documents/Projects/mark/bin/mark"
-TEST_DIR="/home/rana/Documents/Projects/mark/lib/templates/tests"
-TEMPLATE_DIR="/home/rana/Documents/Projects/mark/lib/templates/tests/templates"
-DATA_DIR="/home/rana/Documents/Projects/mark/lib/templates/tests/data"
+# Get the absolute path of this script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Navigate up to the project root (4 levels up from scripts/test_utils.sh)
+PROJECT_ROOT="$(dirname "$(dirname "$(dirname "$(dirname "$SCRIPT_DIR")")")")"
+
+# Test configuration using relative paths
+MARK_SCRIPT="$PROJECT_ROOT/bin/mark"
+TEST_DIR="$PROJECT_ROOT/lib/templates/tests"
+TEMPLATE_DIR="$TEST_DIR/templates"
+DATA_DIR="$TEST_DIR/data"
 LOG_FILE="${HOME}/.mark.log"
 
 # Colors for output

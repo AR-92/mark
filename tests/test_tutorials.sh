@@ -1,10 +1,14 @@
 #!/bin/bash
 
-# Test script for mark tutorials
+# mark - Tutorial Tests
+# Test all tutorial examples
 
-echo "Testing mark tutorials..."
+# Get the absolute path of this script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Navigate up to the project root
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
-cd /home/rana/Documents/Projects/mark
+cd "$PROJECT_ROOT"
 
 # Test beginner tutorial
 echo "Testing beginner tutorial..."
