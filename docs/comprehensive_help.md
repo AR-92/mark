@@ -1,9 +1,11 @@
-# mark - Comprehensive Help System
+# 🌟 mark - Comprehensive Help System 🌟
 
-## Main Commands
+Welcome to the magical world of `mark`! ✨ Let's make prompt generation fun and easy! 🎉
 
-### generate
-Generate output from a template, optionally using a data file.
+## 🚀 Main Commands
+
+### 💫 generate
+Generate amazing output from a template, optionally using a data file.
 
 ```
 mark generate <template_name> [data_file] [--out <output_file>] [--template-dir <dir>] [--interactive] [--fuzzy] [--editor <editor>] [--dry-run] [--force]
@@ -16,11 +18,11 @@ mark generate <template_name> [data_file] [--out <output_file>] [--template-dir 
 **Options:**
 - `--out <output_file>`: Write generated output to `<output_file>` instead of stdout.
 - `--template-dir <dir>`: Use `<dir>` as (an additional) template directory.
-- `--interactive`: Prompt for missing variable values via CLI.
-- `--fuzzy`: Use a fuzzy picker (e.g. `fzf`) to select the template interactively.
-- `--editor <editor>`: Edit output in the given editor before finalizing.
-- `--dry-run`: Show what would happen (rendered output) without writing/saving.
-- `--force`: Overwrite existing output file(s) without prompting.
+- `--interactive`: Prompt for missing variable values via CLI. 🗨️
+- `--fuzzy`: Use a fuzzy picker (e.g. `fzf`) to select the template interactively. 🎯
+- `--editor <editor>`: Edit output in the given editor before finalizing. ✏️
+- `--dry-run`: Show what would happen (rendered output) without writing/saving. 👁️
+- `--force`: Overwrite existing output file(s) without prompting. ⚡
 
 **Examples:**
 ```
@@ -29,8 +31,8 @@ mark generate --interactive --fuzzy
 mark generate report_template --template-dir ~/my-templates
 ```
 
-### template
-Manage templates with subcommands.
+### 🎨 template
+Manage your beautiful templates with these subcommands.
 
 ```
 mark template list [--tag <tag>] [--template-dir <dir>]
@@ -42,14 +44,14 @@ mark template rename <old_name> <new_name> [--template-dir <dir>]
 ```
 
 **Subcommands:**
-- `list`: List all templates available.
-- `show`: Output the raw template content to stdout.
-- `new`: Create a new template.
-- `edit`: Edit an existing template in editor.
-- `delete`: Remove a template (prompt for confirmation).
-- `rename`: Rename a template.
+- `list`: List all templates available. 📋
+- `show`: Output the raw template content to stdout. 👀
+- `new`: Create a new template. ➕
+- `edit`: Edit an existing template in editor. ✏️
+- `delete`: Remove a template (prompt for confirmation). 🗑️
+- `rename`: Rename a template. 🏷️
 
-### config
+### ⚙️ config
 Set or query configuration values.
 
 ```
@@ -65,49 +67,49 @@ mark config list
 - `use_fzf`: Boolean: whether to use fuzzy finder when selecting templates.
 - `data_file_formats`: Allowed formats for data input (json, yaml, toml).
 
-### version
+### 📦 version
 Show version of the tool.
 
 ```
 mark version
 ```
 
-### help
+### ❓ help
 Show help information.
 
 ```
 mark help [command]
 ```
 
-## Wizard Mode
+## 🧙 Wizard Mode
 
-### Interactive Generation Wizard
+### 🌟 Interactive Generation Wizard
 ```
 mark generate --interactive [--fuzzy]
 ```
 
-This mode guides users through:
-1. Template selection (with fuzzy finder if enabled)
-2. Variable input with prompts and validation
-3. Output destination selection
-4. Preview and confirmation
+This magical mode guides users through:
+1. ✨ Template selection (with fuzzy finder if enabled)
+2. 🗨️ Variable input with prompts and validation
+3. 💾 Output destination selection
+4. 👁️ Preview and confirmation
 
-### Template Creation Wizard
+### 🎨 Template Creation Wizard
 ```
 mark template new <template_name> --wizard
 ```
 
-This mode guides users through:
-1. Template name confirmation
-2. Description input
-3. Variable definition (name, type, description)
-4. Sample content creation
-5. Tag assignment (optional)
-6. Template file creation and editing
+This enchanting mode guides users through:
+1. ✅ Template name confirmation
+2. 📝 Description input
+3. 🧮 Variable definition (name, type, description)
+4. 📚 Sample content creation
+5. 🏷️ Tag assignment (optional)
+6. 📄 Template file creation and editing
 
-## Workflow Examples
+## 💡 Workflow Examples
 
-### 1. Quick Prompt Generation
+### 1. ⚡ Quick Prompt Generation
 ```
 # Start interactive mode
 mark generate --interactive
@@ -116,13 +118,13 @@ mark generate --interactive
 mark generate --interactive --fuzzy
 ```
 
-### 2. Template Creation with Wizard
+### 2. 🎨 Template Creation with Wizard
 ```
 # Create new template with guided process
 mark template new my_template --wizard
 ```
 
-### 3. Template Management
+### 3. 📋 Template Management
 ```
 # List all templates
 mark template list
@@ -140,7 +142,7 @@ mark template delete my_template
 mark template rename old_name new_name
 ```
 
-### 4. Configuration Management
+### 4. ⚙️ Configuration Management
 ```
 # Set editor
 mark config set editor nvim
@@ -152,7 +154,7 @@ mark config set use_fzf true
 mark config list
 ```
 
-## Template Structure
+## 📄 Template Structure
 
 Templates can include metadata in YAML front-matter:
 
@@ -175,15 +177,15 @@ Best,
 The Team
 ```
 
-## Data File Formats
+## 📂 Data File Formats
 
-### Simple key=value format
+### 📝 Simple key=value format
 ```
 customer_name=John Doe
 feature_description=Add dark mode to the application
 ```
 
-### JSON format (if enabled)
+### 📦 JSON format (if enabled)
 ```json
 {
   "customer_name": "John Doe",
@@ -191,15 +193,15 @@ feature_description=Add dark mode to the application
 }
 ```
 
-### YAML format (if enabled)
+### 🎨 YAML format (if enabled)
 ```yaml
 customer_name: John Doe
 feature_description: Add dark mode to the application
 ```
 
-## Advanced Features
+## 🧠 Advanced Features
 
-### Conditional Blocks
+### 🔀 Conditional Blocks
 ```
 {{#if condition}}
 Content when condition is true
@@ -212,19 +214,19 @@ Content when condition is false
 {{/if}}
 ```
 
-### Loop Blocks
+### 🔁 Loop Blocks
 ```
 {{#each items}}
 - {{this}}
 {{/each}}
 ```
 
-### File Inclusion
+### 📁 File Inclusion
 ```
 {{@path/to/file.md}}
 ```
 
-## Environment Variables
+## 🌍 Environment Variables
 
 All environment variables are automatically available in templates:
 ```
@@ -232,15 +234,15 @@ Current user: {{USER}}
 Current directory: {{PWD}}
 ```
 
-## Error Handling
+## ⚠️ Error Handling
 
 Common error messages and their meanings:
 
-- "Template not found": The specified template doesn't exist in any template directory
-- "Missing required variable": A variable used in the template wasn't provided in data file or via interactive input
-- "Invalid data file format": The data file format isn't supported or is malformed
+- "Template not found": The specified template doesn't exist in any template directory 🚫
+- "Missing required variable": A variable used in the template wasn't provided in data file or via interactive input ❓
+- "Invalid data file format": The data file format isn't supported or is malformed 💥
 
-## Configuration File
+## ⚙️ Configuration File
 
 Default location: `~/.mark/config.yml`
 
@@ -257,25 +259,25 @@ data_file_formats:
 default_template_dir: ~/.mark/templates
 ```
 
-## Exit Codes
+## 📊 Exit Codes
 
-- 0: Success
-- 1: General error
-- 2: Template not found
-- 3: Missing required variables
-- 4: Invalid data file
+- 0: Success ✅
+- 1: General error ❌
+- 2: Template not found 🚫
+- 3: Missing required variables ❓
+- 4: Invalid data file 💥
 
-## LLM Usage Guide
+## 🤖 LLM Usage Guide
 
 For AI systems using this tool:
 
-1. Always start with `mark help` to understand available commands
-2. Use `mark template list` to see available templates
-3. Use `mark template show <template_name>` to examine template structure
-4. Use `mark generate <template_name> <data_file>` for automated generation
-5. Use `mark generate --interactive` for guided generation
-6. Use `mark template new <name> --wizard` for template creation
-7. Use `mark config list` to check current configuration
-8. Use `mark version` to check tool version
+1. 🆘 Always start with `mark help` to understand available commands
+2. 📋 Use `mark template list` to see available templates
+3. 👀 Use `mark template show <template_name>` to examine template structure
+4. ⚡ Use `mark generate <template_name> <data_file>` for automated generation
+5. 🧙 Use `mark generate --interactive` for guided generation
+6. 🎨 Use `mark template new <name> --wizard` for template creation
+7. ⚙️ Use `mark config list` to check current configuration
+8. 📦 Use `mark version` to check tool version
 
-The tool is designed to be completely self-documenting and predictable in behavior.
+The tool is designed to be completely self-documenting and predictable in behavior. 🌈

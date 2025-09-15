@@ -33,6 +33,11 @@ source "$LIB_DIR/core/logging.sh"
 source "$LIB_DIR/utils/parser.sh"
 source "$LIB_DIR/utils/processor.sh"
 
+# Source color utilities if available
+if [[ -f "$LIB_DIR/utils/colors.sh" ]]; then
+    source "$LIB_DIR/utils/colors.sh"
+fi
+
 # Source command functions
 source "$LIB_DIR/commands/generate.sh"
 source "$LIB_DIR/commands/list.sh"
