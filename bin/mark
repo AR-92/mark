@@ -105,6 +105,28 @@ case "${1:-}" in
             exit 1
         fi
         ;;
+    about|info)
+        # Source enhanced about if available
+        if [[ -f "$LIB_DIR/commands/about_enhanced.sh" ]]; then
+            source "$LIB_DIR/commands/about_enhanced.sh"
+            if declare -f show_about_formatted >/dev/null && command -v gum &> /dev/null; then
+                show_about_formatted
+                exit 0
+            fi
+        fi
+        
+        # Fall back to simple about text
+        echo "mark - AI Prompt Templating Tool v1.0.0"
+        echo "======================================"
+        echo ""
+        echo "A powerful tool for generating AI prompts from templates with:"
+        echo "  • Placeholders: {{variable_name}}"
+        echo "  • File inclusion: {{@file_path}}"
+        echo "  • Conditional blocks: {{#if condition}}...{{/if}}"
+        echo "  • Loop/iteration blocks: {{#each array}}...{{/each}}"
+        echo ""
+        echo "For more information, visit: https://github.com/AR-92/mark"
+        ;;
     template|t)
         if declare -f template_command >/dev/null; then
             template_command "$2" "$3" "$4" "$5"

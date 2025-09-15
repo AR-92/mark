@@ -2,8 +2,20 @@
 
 # mark - Professional help command
 
+# Source enhanced help if available
+if [[ -f "$(dirname "${BASH_SOURCE[0]}")/help_enhanced.sh" ]]; then
+    source "$(dirname "${BASH_SOURCE[0]}")/help_enhanced.sh"
+fi
+
 # Main help function
 show_help() {
+    # Use enhanced help if available and Gum is installed
+    if declare -f show_help_formatted >/dev/null && command -v gum &> /dev/null; then
+        show_help_formatted
+        return
+    fi
+    
+    # Fall back to plain text help
     echo "MARK - AI Prompt Templating Tool v1.0.0"
     echo "========================================"
     echo ""
@@ -19,6 +31,7 @@ show_help() {
     echo "    clear                          Clear all log entries"
     echo "    config [action] [key] [value]  Manage tool configuration"
     echo "    template [action] [args]       Manage prompt templates"
+    echo "    about                          Display information about mark"
     echo "    help                           Display this help information"
     echo ""
     echo "    version                        Show tool version information"
@@ -53,6 +66,11 @@ show_help() {
 
 # Detailed help for specific commands
 show_detailed_help() {
+    # Use enhanced help if available and Gum is installed
+    if declare -f show_detailed_help_formatted >/dev/null && command -v gum &> /dev/null; then
+        show_detailed_help_formatted "$1"
+        return
+    fi
     case "$1" in
         generate|g)
             echo "MARK GENERATE"
@@ -303,6 +321,24 @@ show_detailed_help() {
             echo "    mark help generate"
             echo "    mark help template"
             echo "    mark h config"
+            ;;
+            
+        about|info)
+            echo "MARK ABOUT"
+            echo "=========="
+            echo ""
+            echo "Display information about mark and its features."
+            echo ""
+            echo "USAGE:"
+            echo "    mark about"
+            echo "    mark info"
+            echo ""
+            echo "DESCRIPTION:"
+            echo "    Shows detailed information about mark, its capabilities, and use cases."
+            echo ""
+            echo "EXAMPLES:"
+            echo "    mark about"
+            echo "    mark info"
             ;;
             
         *)
