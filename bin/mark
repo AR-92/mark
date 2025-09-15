@@ -50,6 +50,11 @@ if [[ -f "$LIB_DIR/commands/upgrade.sh" ]]; then
     source "$LIB_DIR/commands/upgrade.sh"
 fi
 
+# Check if uninstall.sh exists in the lib/commands directory
+if [[ -f "$LIB_DIR/commands/uninstall.sh" ]]; then
+    source "$LIB_DIR/commands/uninstall.sh"
+fi
+
 # Main command router
 case "${1:-}" in
     generate)
@@ -88,6 +93,14 @@ case "${1:-}" in
             upgrade_mark
         else
             echo "Error: Upgrade command not available" >&2
+            exit 1
+        fi
+        ;;
+    uninstall)
+        if declare -f uninstall_mark >/dev/null; then
+            uninstall_mark
+        else
+            echo "Error: Uninstall command not available" >&2
             exit 1
         fi
         ;;

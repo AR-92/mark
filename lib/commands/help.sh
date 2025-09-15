@@ -17,6 +17,7 @@ COMMANDS:
     config [set|get|list] [key] [value]  Manage configuration
     template [list|show|new|edit|delete|rename] [args]  Manage templates
     upgrade                       Upgrade mark to latest version
+    uninstall                     Uninstall mark from your system
     version                       Show version information
     help                          Show this help message
 
@@ -48,6 +49,7 @@ EXAMPLES:
     mark template delete my_template.md
     mark template rename old_name new_name
     mark upgrade
+    mark uninstall
     mark version
     mark help
 
@@ -137,6 +139,7 @@ CONFIGURABLE KEYS:
     editor                Default editor for template new/edit
     use_fzf               Whether to use fuzzy finder when selecting templates
     data_file_formats     Allowed formats for data input (json, yaml, toml)
+    wizard_questions      Default questions for wizard mode templates
 
 EXAMPLES:
     mark config set editor nvim
@@ -168,6 +171,28 @@ OPTIONS:
 
 EXAMPLES:
     mark upgrade
+EOF
+            ;;
+        uninstall)
+            cat << 'EOF'
+UNINSTALL - Remove mark from your system
+
+USAGE:
+    mark uninstall
+
+DESCRIPTION:
+    Completely removes mark CLI tool from your system.
+
+WHAT GETS REMOVED:
+    - $HOME/.local/bin/mark
+    - $HOME/.local/lib/mark/
+    - Configuration files in $HOME/.mark/ (optional)
+
+OPTIONS:
+    None
+
+EXAMPLES:
+    mark uninstall
 EOF
             ;;
         *)
