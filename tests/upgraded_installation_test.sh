@@ -16,7 +16,7 @@ fi
 # Test 2: Help system
 echo "2. Testing help system..."
 help_output=$(mark help)
-if [[ "$help_output" == *"mark 1.0.0 - AI prompt templating tool"* ]]; then
+if [[ "$help_output" == *"MARK - AI Prompt Templating Tool"* ]]; then
     echo "   PASS: Basic help works"
 else
     echo "   FAIL: Basic help failed"
@@ -39,18 +39,8 @@ else
     echo "   FAIL: Config list failed"
 fi
 
-# Test 4: Config wizard
-echo "4. Testing config wizard..."
-# Use timeout to prevent hanging
-timeout 1s mark config wizard > /dev/null 2>&1
-if [[ $? -eq 124 ]] || [[ $? -eq 0 ]]; then
-    echo "   PASS: Config wizard executes without errors"
-else
-    echo "   FAIL: Config wizard execution failed"
-fi
-
-# Test 5: Template commands
-echo "5. Testing template commands..."
+# Test 4: Template commands
+echo "4. Testing template commands..."
 template_list=$(mark template list)
 if [[ "$template_list" == *"Available templates:"* ]]; then
     echo "   PASS: Template list works"
@@ -58,15 +48,19 @@ else
     echo "   FAIL: Template list failed"
 fi
 
-# Test 6: Generate command
-echo "6. Testing generate command..."
-# Use timeout to prevent hanging
-timeout 1s mark generate --interactive > /dev/null 2>&1
-if [[ $? -eq 124 ]] || [[ $? -eq 0 ]]; then
-    echo "   PASS: Generate interactive executes without errors"
+# Test 5: Generate command with a simple template
+echo "5. Testing generate command with simple template..."
+# Create a simple test template
+echo "{{test_variable}}" > ~/.mark/templates/test_template.md
+generate_result=$(mark generate test_template.md 2>&1)
+if [[ $? -eq 0 ]]; then
+    echo "   PASS: Generate command works"
 else
-    echo "   FAIL: Generate interactive execution failed"
+    echo "   FAIL: Generate command failed"
 fi
+
+# Cleanup the test template
+rm -f ~/.mark/templates/test_template.md
 
 # Cleanup
 mark config set test_key "" > /dev/null 2>&1

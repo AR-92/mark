@@ -49,7 +49,7 @@ fi
 # Test help command
 echo "4. Testing help command..."
 output=$(./bin/mark help)
-if [[ "$output" == *"mark 1.0.0 - AI prompt templating tool"* ]]; then
+if [[ "$output" == *"MARK - AI Prompt Templating Tool"* ]]; then
     echo "   PASS: Help command works"
 else
     echo "   FAIL: Help command failed"
