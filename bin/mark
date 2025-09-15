@@ -62,7 +62,7 @@ fi
 
 # Main command router
 case "${1:-}" in
-    generate)
+    generate|g)
         if [[ -z "$2" ]] && [[ "$2" != "--interactive" ]] && [[ "$2" != "-i" ]]; then
             log "ERROR: Missing template argument for generate command"
             echo "Error: Missing template argument for generate command" >&2
@@ -71,13 +71,13 @@ case "${1:-}" in
         fi
         generate_prompt "$2" "$3"
         ;;
-    list)
+    list|l)
         list_prompts
         ;;
-    clear)
+    clear|c)
         clear_logs
         ;;
-    config)
+    config|cfg)
         if declare -f config_command >/dev/null; then
             config_command "$2" "$3" "$4"
         else
@@ -85,7 +85,7 @@ case "${1:-}" in
             exit 1
         fi
         ;;
-    template)
+    template|t)
         if declare -f template_command >/dev/null; then
             template_command "$2" "$3" "$4" "$5"
         else
@@ -93,7 +93,7 @@ case "${1:-}" in
             exit 1
         fi
         ;;
-    upgrade)
+    upgrade|u)
         if declare -f upgrade_mark >/dev/null; then
             upgrade_mark
         else
@@ -101,7 +101,7 @@ case "${1:-}" in
             exit 1
         fi
         ;;
-    uninstall)
+    uninstall|un)
         if declare -f uninstall_mark >/dev/null; then
             uninstall_mark
         else
@@ -109,7 +109,7 @@ case "${1:-}" in
             exit 1
         fi
         ;;
-    help|--help|-h)
+    help|h|--help|-h)
         if [[ -n "$2" ]]; then
             show_detailed_help "$2"
         else
@@ -117,7 +117,7 @@ case "${1:-}" in
         fi
         log "Help displayed"
         ;;
-    version|--version|-v)
+    version|v|--version|-v)
         echo "mark 1.0.0"
         log "Version displayed"
         ;;

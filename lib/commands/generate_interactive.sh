@@ -9,6 +9,8 @@ source "/home/rana/Documents/mark/lib/utils/interactive.sh"
 # Interactive generate function
 generate_prompt_interactive() {
     echo "🌟 Welcome to Mark Interactive Mode"
+    echo "   This mode helps you generate prompts from templates interactively."
+    echo "   You can quit at any time by choosing '0' or entering 'q'."
     echo ""
     
     # Get template directories from config
@@ -53,10 +55,13 @@ generate_prompt_interactive() {
     
     # Select template
     echo "📋 Select a template:"
-    local selected_template=$(select_from_list "Templates" "${all_templates[@]}")
+    echo "   Choose a template from the list below to generate a prompt."
+    local selected_template
+    selected_template=$(select_from_list "Available Templates" "${all_templates[@]}")
+    local select_result=$?
     
-    if [[ -z "$selected_template" ]]; then
-        echo "No template selected."
+    if [[ $select_result -ne 0 ]] || [[ -z "$selected_template" ]]; then
+        echo "No template selected or operation cancelled."
         return 1
     fi
     
@@ -117,7 +122,15 @@ generate_prompt_interactive() {
     echo "🔧 Required Variables:"
     if [[ ${#variables[@]} -gt 0 ]]; then
         for var in "${variables[@]}"; do
-            local value=$(prompt_input "Enter value for $var")
+            local value
+            value=$(prompt_input "Enter value for $var")
+            local input_result=$?
+            
+            if [[ $input_result -ne 0 ]]; then
+                echo "Variable input cancelled."
+                return 1
+            fi
+            
             # Export variable so it's available for template processing
             export "$var=$value"
         done
@@ -128,7 +141,14 @@ generate_prompt_interactive() {
     # Ask for output destination
     echo ""
     echo "💾 Output Options:"
-    local output_choice=$(prompt_choice "How would you like to save the output?" "Display on screen" "Save to file")
+    local output_choice
+    output_choice=$(prompt_choice "How would you like to save the output?" "Display on screen" "Save to file")
+    local choice_result=$?
+    
+    if [[ $choice_result -ne 0 ]] || [[ -z "$output_choice" ]]; then
+        echo "Operation cancelled."
+        return 1
+    fi
     
     local output_file=""
     if [[ "$output_choice" == "Save to file" ]]; then
@@ -151,7 +171,15 @@ generate_prompt_interactive() {
     
     # Confirm before finalizing
     echo ""
-    local confirm=$(prompt_confirm "Proceed with generation?")
+    local confirm
+    confirm=$(prompt_confirm "Proceed with generation?")
+    local confirm_result=$?
+    
+    if [[ $confirm_result -ne 0 ]]; then
+        echo "Generation cancelled."
+        return 0
+    fi
+    
     if [[ "$confirm" != "yes" ]]; then
         echo "Generation cancelled."
         return 0
