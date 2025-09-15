@@ -1,0 +1,823 @@
+#!/bin/bash
+
+# mark-tui - Full Terminal User Interface for mark CLI
+# A beautiful, interactive TUI dashboard for the mark prompt templating tool
+
+# Check if Gum is installed
+check_gum() {
+    if ! command -v gum &> /dev/null; then
+        echo "Error: Gum is not installed. Please install Gum to use the TUI."
+        echo "See: https://github.com/charmbracelet/gum#installation"
+        exit 1
+    fi
+}
+
+# Show main dashboard
+show_dashboard() {
+    clear
+    
+    # Header
+    gum style \
+        --border rounded \
+        --border-foreground 212 \
+        --align center \
+        --padding "1 3" \
+        --margin "1 0" \
+        "🚀 MARK - AI Prompt Templating Tool v1.0.0"
+    
+    # Status bar
+    gum style \
+        --foreground 240 \
+        --margin "0 0 1 0" \
+        "💡 TIP: Use arrow keys to navigate, Enter to select, and Ctrl+C to exit"
+    
+    # Main menu
+    choice=$(gum choose \
+        --cursor="👉 " \
+        --selected="✅ " \
+        --header="Main Menu" \
+        --cursor-prefix=" " \
+        --selected-prefix=" " \
+        "📝 Template Management" \
+        "⚡ Prompt Generation" \
+        "⚙️  Configuration" \
+        "📚 Help & Documentation" \
+        "🔄 Upgrade mark" \
+        "🗑️  Uninstall mark" \
+        "🚪 Exit")
+    
+    # Handle menu selection
+    case "$choice" in
+        "📝 Template Management")
+            template_management_menu
+            ;;
+        "⚡ Prompt Generation")
+            prompt_generation_menu
+            ;;
+        "⚙️  Configuration")
+            configuration_menu
+            ;;
+        "📚 Help & Documentation")
+            help_menu
+            ;;
+        "🔄 Upgrade mark")
+            upgrade_mark_tui
+            ;;
+        "🗑️  Uninstall mark")
+            uninstall_mark_tui
+            ;;
+        "🚪 Exit"|"")
+            exit_tui
+            ;;
+    esac
+}
+
+# Template Management Menu
+template_management_menu() {
+    clear
+    
+    # Header
+    gum style \
+        --border rounded \
+        --border-foreground 99 \
+        --align center \
+        --padding "1 3" \
+        "📝 Template Management"
+    
+    # Menu
+    choice=$(gum choose \
+        --cursor="👉 " \
+        --selected="✅ " \
+        --header="Template Operations" \
+        --cursor-prefix=" " \
+        --selected-prefix=" " \
+        "📋 List All Templates" \
+        "🔍 Show Template Content" \
+        "➕ Create New Template" \
+        "✏️  Edit Template" \
+        "❌ Delete Template" \
+        "🔄 Rename Template" \
+        "⬅️  Back to Main Menu")
+    
+    case "$choice" in
+        "📋 List All Templates")
+            list_templates_tui
+            ;;
+        "🔍 Show Template Content")
+            show_template_tui
+            ;;
+        "➕ Create New Template")
+            create_template_tui
+            ;;
+        "✏️  Edit Template")
+            edit_template_tui
+            ;;
+        "❌ Delete Template")
+            delete_template_tui
+            ;;
+        "🔄 Rename Template")
+            rename_template_tui
+            ;;
+        "⬅️  Back to Main Menu"| "")
+            show_dashboard
+            ;;
+    esac
+}
+
+# Prompt Generation Menu
+prompt_generation_menu() {
+    clear
+    
+    # Header
+    gum style \
+        --border rounded \
+        --border-foreground 220 \
+        --align center \
+        --padding "1 3" \
+        "⚡ Prompt Generation"
+    
+    # Menu
+    choice=$(gum choose \
+        --cursor="👉 " \
+        --selected="✅ " \
+        --header="Generation Options" \
+        --cursor-prefix=" " \
+        --selected-prefix=" " \
+        "✨ Interactive Generation Wizard" \
+        "⚡ Quick Generate (with data)" \
+        "🚀 Quick Generate (no data)" \
+        "⬅️  Back to Main Menu")
+    
+    case "$choice" in
+        "✨ Interactive Generation Wizard")
+            interactive_generate_tui
+            ;;
+        "⚡ Quick Generate (with data)")
+            quick_generate_with_data_tui
+            ;;
+        "🚀 Quick Generate (no data)")
+            quick_generate_no_data_tui
+            ;;
+        "⬅️  Back to Main Menu"| "")
+            show_dashboard
+            ;;
+    esac
+}
+
+# Configuration Menu
+configuration_menu() {
+    clear
+    
+    # Header
+    gum style \
+        --border rounded \
+        --border-foreground 46 \
+        --align center \
+        --padding "1 3" \
+        "⚙️  Configuration"
+    
+    # Menu
+    choice=$(gum choose \
+        --cursor="👉 " \
+        --selected="✅ " \
+        --header="Configuration Options" \
+        --cursor-prefix=" " \
+        --selected-prefix=" " \
+        "📋 List All Settings" \
+        "✏️  Set Configuration Value" \
+        "🔍 Get Configuration Value" \
+        "🔄 Reset to Defaults" \
+        "⬅️  Back to Main Menu")
+    
+    case "$choice" in
+        "📋 List All Settings")
+            list_config_tui
+            ;;
+        "✏️  Set Configuration Value")
+            set_config_tui
+            ;;
+        "🔍 Get Configuration Value")
+            get_config_tui
+            ;;
+        "🔄 Reset to Defaults")
+            reset_config_tui
+            ;;
+        "⬅️  Back to Main Menu"| "")
+            show_dashboard
+            ;;
+    esac
+}
+
+# Help Menu
+help_menu() {
+    clear
+    
+    # Header
+    gum style \
+        --border rounded \
+        --border-foreground 201 \
+        --align center \
+        --padding "1 3" \
+        "📚 Help & Documentation"
+    
+    # Menu
+    choice=$(gum choose \
+        --cursor="👉 " \
+        --selected="✅ " \
+        --header="Help Options" \
+        --cursor-prefix=" " \
+        --selected-prefix=" " \
+        "📖 Main Help" \
+        "📘 Command Reference" \
+        "🎓 Tutorials" \
+        "❓ About mark" \
+        "⬅️  Back to Main Menu")
+    
+    case "$choice" in
+        "📖 Main Help")
+            show_main_help_tui
+            ;;
+        "📘 Command Reference")
+            show_commands_help_tui
+            ;;
+        "🎓 Tutorials")
+            show_tutorials_tui
+            ;;
+        "❓ About mark")
+            show_about_tui
+            ;;
+        "⬅️  Back to Main Menu"| "")
+            show_dashboard
+            ;;
+    esac
+}
+
+# Template Management Functions
+list_templates_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 99 \
+        --align center \
+        --padding "1 3" \
+        "📋 All Templates"
+    
+    # Show loading spinner
+    gum spin --title="Loading templates..." --show-output -- bash -c "echo; ./bin/mark template list; echo"
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    template_management_menu
+}
+
+show_template_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 99 \
+        --align center \
+        --padding "1 3" \
+        "🔍 Show Template Content"
+    
+    # Get template name
+    template=$(gum input --placeholder="Enter template name")
+    
+    if [[ -n "$template" ]]; then
+        echo ""
+        gum style --border rounded --border-foreground 99 "Template Content:"
+        echo ""
+        # Show loading spinner
+        gum spin --title="Loading template..." --show-output -- ./bin/mark template show "$template"
+    else
+        gum style --foreground 196 "No template name provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    template_management_menu
+}
+
+create_template_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 99 \
+        --align center \
+        --padding "1 3" \
+        "➕ Create New Template"
+    
+    # Get template name
+    template=$(gum input --placeholder="Enter template name (without .md extension)")
+    
+    if [[ -n "$template" ]]; then
+        if gum confirm "Create new template '$template'?"; then
+            # Show loading spinner
+            gum spin --title="Creating template..." -- ./bin/mark template new "$template"
+            gum style --foreground 46 "Template '$template' created successfully!"
+            
+            # Ask if user wants to edit
+            if gum confirm "Edit the new template now?"; then
+                # Show loading spinner
+                gum spin --title="Opening editor..." -- ./bin/mark template edit "$template"
+            fi
+        fi
+    else
+        gum style --foreground 196 "No template name provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    template_management_menu
+}
+
+edit_template_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 99 \
+        --align center \
+        --padding "1 3" \
+        "✏️  Edit Template"
+    
+    # Get template name
+    template=$(gum input --placeholder="Enter template name to edit")
+    
+    if [[ -n "$template" ]]; then
+        if gum confirm "Edit template '$template'?"; then
+            # Show loading spinner
+            gum spin --title="Opening editor..." -- ./bin/mark template edit "$template"
+            gum style --foreground 46 "Template '$template' edited successfully!"
+        fi
+    else
+        gum style --foreground 196 "No template name provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    template_management_menu
+}
+
+delete_template_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 99 \
+        --align center \
+        --padding "1 3" \
+        "❌ Delete Template"
+    
+    # Get template name
+    template=$(gum input --placeholder="Enter template name to delete")
+    
+    if [[ -n "$template" ]]; then
+        if gum confirm "Are you sure you want to delete template '$template'? This action cannot be undone."; then
+            # Show loading spinner
+            gum spin --title="Deleting template..." -- ./bin/mark template delete "$template"
+            gum style --foreground 46 "Template '$template' deleted successfully!"
+        else
+            gum style --foreground 240 "Deletion cancelled"
+        fi
+    else
+        gum style --foreground 196 "No template name provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    template_management_menu
+}
+
+rename_template_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 99 \
+        --align center \
+        --padding "1 3" \
+        "🔄 Rename Template"
+    
+    # Get old template name
+    old_name=$(gum input --placeholder="Enter current template name")
+    
+    if [[ -n "$old_name" ]]; then
+        # Get new template name
+        new_name=$(gum input --placeholder="Enter new template name")
+        
+        if [[ -n "$new_name" ]]; then
+            if gum confirm "Rename template '$old_name' to '$new_name'?"; then
+                # Show loading spinner
+                gum spin --title="Renaming template..." -- ./bin/mark template rename "$old_name" "$new_name"
+                gum style --foreground 46 "Template renamed successfully!"
+            else
+                gum style --foreground 240 "Rename cancelled"
+            fi
+        else
+            gum style --foreground 196 "No new template name provided"
+        fi
+    else
+        gum style --foreground 196 "No current template name provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    template_management_menu
+}
+
+# Prompt Generation Functions
+interactive_generate_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 220 \
+        --align center \
+        --padding "1 3" \
+        "✨ Interactive Generation Wizard"
+    
+    # Use the existing interactive generate command
+    if ./bin/mark generate interactive; then
+        gum style --foreground 46 "Prompt generated successfully!"
+    else
+        gum style --foreground 196 "Prompt generation failed"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    prompt_generation_menu
+}
+
+quick_generate_with_data_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 220 \
+        --align center \
+        --padding "1 3" \
+        "⚡ Quick Generate (with data)"
+    
+    # Get template name
+    template=$(gum input --placeholder="Enter template name")
+    
+    if [[ -n "$template" ]]; then
+        # Get data file
+        data_file=$(gum input --placeholder="Enter data file path (optional)")
+        
+        # Get output file
+        output_file=$(gum input --placeholder="Enter output file path (optional, leave empty for stdout)")
+        
+        if [[ -n "$output_file" ]]; then
+            # Show loading spinner
+            gum spin --title="Generating prompt..." -- ./bin/mark generate "$template" "$data_file" --out "$output_file"
+            gum style --foreground 46 "Prompt generated and saved to '$output_file'!"
+        else
+            # Show loading spinner
+            gum spin --title="Generating prompt..." --show-output -- ./bin/mark generate "$template" "$data_file"
+        fi
+    else
+        gum style --foreground 196 "No template name provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    prompt_generation_menu
+}
+
+quick_generate_no_data_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 220 \
+        --align center \
+        --padding "1 3" \
+        "🚀 Quick Generate (no data)"
+    
+    # Get template name
+    template=$(gum input --placeholder="Enter template name")
+    
+    if [[ -n "$template" ]]; then
+        # Get output file
+        output_file=$(gum input --placeholder="Enter output file path (optional, leave empty for stdout)")
+        
+        if [[ -n "$output_file" ]]; then
+            # Show loading spinner
+            gum spin --title="Generating prompt..." -- ./bin/mark generate "$template" --out "$output_file"
+            gum style --foreground 46 "Prompt generated and saved to '$output_file'!"
+        else
+            # Show loading spinner
+            gum spin --title="Generating prompt..." --show-output -- ./bin/mark generate "$template"
+        fi
+    else
+        gum style --foreground 196 "No template name provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    prompt_generation_menu
+}
+
+# Configuration Functions
+list_config_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 46 \
+        --align center \
+        --padding "1 3" \
+        "📋 Configuration Settings"
+    
+    # Show loading spinner
+    gum spin --title="Loading configuration..." --show-output -- ./bin/mark config list
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    configuration_menu
+}
+
+set_config_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 46 \
+        --align center \
+        --padding "1 3" \
+        "✏️  Set Configuration Value"
+    
+    # Get key
+    key=$(gum input --placeholder="Enter configuration key")
+    
+    if [[ -n "$key" ]]; then
+        # Get value
+        value=$(gum input --placeholder="Enter value for $key")
+        
+        if [[ -n "$value" ]]; then
+            # Show loading spinner
+            gum spin --title="Setting configuration..." -- ./bin/mark config set "$key" "$value"
+            gum style --foreground 46 "Configuration updated: $key=$value"
+        else
+            gum style --foreground 196 "No value provided"
+        fi
+    else
+        gum style --foreground 196 "No configuration key provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    configuration_menu
+}
+
+get_config_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 46 \
+        --align center \
+        --padding "1 3" \
+        "🔍 Get Configuration Value"
+    
+    # Get key
+    key=$(gum input --placeholder="Enter configuration key")
+    
+    if [[ -n "$key" ]]; then
+        # Show loading spinner
+        gum spin --title="Retrieving configuration..." --show-output -- ./bin/mark config get "$key"
+    else
+        gum style --foreground 196 "No configuration key provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    configuration_menu
+}
+
+reset_config_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 46 \
+        --align center \
+        --padding "1 3" \
+        "🔄 Reset Configuration"
+    
+    if gum confirm "Reset all configuration to defaults?"; then
+        # Show loading spinner
+        gum spin --title="Resetting configuration..." -- bash -c "rm -f ~/.mark/config.data 2>/dev/null || true"
+        gum style --foreground 46 "Configuration reset to defaults!"
+    else
+        gum style --foreground 240 "Reset cancelled"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    configuration_menu
+}
+
+# Help Functions
+show_main_help_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 201 \
+        --align center \
+        --padding "1 3" \
+        "📖 Main Help"
+    
+    # Show loading spinner
+    gum spin --title="Loading help..." --show-output -- ./bin/mark help
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    help_menu
+}
+
+show_commands_help_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 201 \
+        --align center \
+        --padding "1 3" \
+        "📘 Command Reference"
+    
+    # Get command
+    command=$(gum input --placeholder="Enter command name (generate, template, config, etc.)")
+    
+    if [[ -n "$command" ]]; then
+        # Show loading spinner
+        gum spin --title="Loading command help..." --show-output -- ./bin/mark help "$command"
+    else
+        gum style --foreground 196 "No command name provided"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    help_menu
+}
+
+show_tutorials_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 201 \
+        --align center \
+        --padding "1 3" \
+        "🎓 Tutorials"
+    
+    gum style --foreground 212 "Tutorials are available in the examples/tutorials directory."
+    echo ""
+    gum style --foreground 240 "You can run tutorials with: ./tests/run_tutorials.sh"
+    echo ""
+    gum style --foreground 33 "Documentation: https://github.com/AR-92/mark"
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    help_menu
+}
+
+show_about_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 201 \
+        --align center \
+        --padding "1 3" \
+        "❓ About mark"
+    
+    cat << 'EOF' | gum format
+# mark - AI Prompt Templating Tool
+
+**Version:** 1.0.0
+
+## Description
+`mark` is a powerful Bash-based tool for generating AI/MCP-ready prompts from templates with support for placeholders, file substitution, conditional blocks, and loops.
+
+## Features
+- **Placeholders**: `{{variable_name}}` for simple variable substitution
+- **File Substitution**: `{{@file_path}}` to include content from other files
+- **Conditional Blocks**: `{{#if condition}}...{{/if}}` for conditional content
+- **Loop Blocks**: `{{#each array}}...{{/each}}` for iterating over lists
+- **Template Management**: List, show, create, edit, delete, and rename templates
+- **Configuration Management**: Set, get, and list configuration options
+- **Interactive TUI**: Beautiful terminal interface with Gum integration
+
+## The Power of mark for AI Agents and Prompt Creation
+`mark` transforms how AI agents and developers create, manage, and deploy prompts by providing a robust templating system that enables:
+
+### 1. Dynamic Prompt Generation
+Generate thousands of unique prompts from a single template by varying input parameters.
+
+### 2. Modular Prompt Architecture
+Build complex, reusable prompt components that can be combined and nested.
+
+### 3. Context-Aware AI Agents
+Enable AI agents to dynamically construct prompts based on user context and preferences.
+
+### 4. Production-Ready Prompt Orchestration
+Deploy AI systems that generate prompts on-demand with error handling and validation.
+
+## Links
+- **Repository**: https://github.com/AR-92/mark
+- **Documentation**: See README.md for detailed information
+- **Issues**: Report bugs at https://github.com/AR-92/mark/issues
+EOF
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    help_menu
+}
+
+# System Functions
+upgrade_mark_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 202 \
+        --align center \
+        --padding "1 3" \
+        "🔄 Upgrade mark"
+    
+    if gum confirm "Upgrade mark to the latest version?"; then
+        # Show loading spinner
+        gum spin --title="Upgrading mark..." --show-output -- ./bin/mark upgrade
+        gum style --foreground 46 "mark upgraded successfully!"
+    else
+        gum style --foreground 240 "Upgrade cancelled"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    show_dashboard
+}
+
+uninstall_mark_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 196 \
+        --align center \
+        --padding "1 3" \
+        "🗑️  Uninstall mark"
+    
+    gum style --foreground 196 "🚨 WARNING: This will remove all mark components from your system!"
+    echo ""
+    
+    if gum confirm "Are you absolutely sure you want to uninstall mark?"; then
+        if gum confirm "This action cannot be undone. Continue?"; then
+            # Show loading spinner
+            gum spin --title="Uninstalling mark..." --show-output -- ./bin/mark uninstall
+            gum style --foreground 46 "mark uninstalled successfully!"
+        else
+            gum style --foreground 240 "Uninstall cancelled"
+        fi
+    else
+        gum style --foreground 240 "Uninstall cancelled"
+    fi
+    
+    echo ""
+    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
+    show_dashboard
+}
+
+# Exit function
+exit_tui() {
+    clear
+    
+    gum style \
+        --border rounded \
+        --border-foreground 240 \
+        --align center \
+        --padding "1 3" \
+        "👋 Thank you for using mark!"
+    
+    gum style --foreground 240 "See you next time! 🚀"
+    echo ""
+    exit 0
+}
+
+# Main function
+main() {
+    # Check if Gum is installed
+    check_gum
+    
+    # Show the main dashboard
+    show_dashboard
+}
+
+# Run main function
+main "$@"

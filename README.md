@@ -105,6 +105,7 @@ Deploy AI systems that generate prompts on-demand with:
 - **Configuration Management**: Set, get, and list configuration options
 - **CLI Interface**: Commands (`generate`, `list`, `clear`, `config`, `template`, `version`, `help`)
 - **Interactive Mode** (with Gum): Enhanced interactive experience with fuzzy search, styled prompts, and guided workflows
+- **Full TUI Dashboard** (with Gum): Beautiful terminal user interface for all mark functionality
 
 ## AI Agent Integration
 
@@ -534,12 +535,30 @@ Once Gum is installed, you can use the interactive template management:
 
 This provides a menu-driven interface for all template operations with fuzzy search capabilities and styled prompts.
 
+### TUI Dashboard
+
+For the full experience, launch the complete Terminal User Interface (TUI) dashboard:
+
+```bash
+# Launch the TUI dashboard
+./mark-tui
+```
+
+The TUI provides a beautiful, interactive dashboard with:
+- Visual navigation menus with styled components
+- Template management interface
+- Prompt generation workflows
+- Configuration management
+- Help and documentation browser
+- System operations (upgrade, uninstall)
+
 ### Benefits of Gum Integration
 
 - **Fuzzy Search**: Easily find templates without remembering exact names
 - **Styled Prompts**: Visually appealing interface with colors and formatting
 - **Guided Workflows**: Step-by-step wizards for complex operations
 - **Enhanced UX**: Better user experience with visual feedback and confirmation dialogs
+- **Full TUI**: Complete dashboard interface for all mark functionality
 
 ## Template Management
 
@@ -590,6 +609,14 @@ The tool includes a comprehensive test suite with 50+ tests:
 ```
 
 Current test status: 50/50 tests passing
+
+## Documentation
+
+- `README.md` - This file
+- `TUI_DOCUMENTATION.md` - Complete documentation for the TUI interface
+- `TUI_IMPLEMENTATION_SUMMARY.md` - Technical summary of the TUI implementation
+- `GUM_ENHANCEMENT_GUIDE.md` - Guide for using Gum with mark
+- `GUM_INTEGRATION_SUMMARY.md` - Summary of Gum integration features
 
 ## Contributing
 

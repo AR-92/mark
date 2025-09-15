@@ -113,6 +113,15 @@ case "${1:-}" in
             exit 1
         fi
         ;;
+    tui)
+        # Check if mark-tui exists and is executable
+        if [[ -f "$SCRIPT_DIR/mark-tui" ]] && [[ -x "$SCRIPT_DIR/mark-tui" ]]; then
+            exec "$SCRIPT_DIR/mark-tui"
+        else
+            echo "Error: TUI not available. Please ensure mark-tui exists and is executable." >&2
+            exit 1
+        fi
+        ;;
     upgrade|u)
         if declare -f upgrade_mark >/dev/null; then
             upgrade_mark
