@@ -545,7 +545,10 @@ For the full experience, launch the complete Terminal User Interface (TUI) dashb
 ```
 
 The TUI provides a beautiful, interactive dashboard with:
-- Visual navigation menus with styled components
+- Clean layout without border boxes
+- Solarized blue color scheme
+- Enhanced visual elements with animations
+- Improved navigation flow with breadcrumbs
 - Template management interface
 - Prompt generation workflows
 - Configuration management

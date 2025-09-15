@@ -2,7 +2,9 @@
 
 ## Overview
 
-The mark TUI (Terminal User Interface) is a beautiful, interactive dashboard for the mark CLI tool that provides a complete graphical interface in the terminal using Gum components. It brings together all functionality of mark in a user-friendly, visually appealing interface.
+The mark TUI (Terminal User Interface) is a beautiful, interactive dashboard for the mark CLI tool that provides a complete graphical interface in the terminal using Gum components. 
+
+**Note:** An enhanced version of the TUI is now available with a cleaner design, Solarized blue color scheme, and improved flow. See `ENHANCED_TUI_SUMMARY.md` for details. It brings together all functionality of mark in a user-friendly, visually appealing interface.
 
 ## Features
 

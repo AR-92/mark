@@ -432,7 +432,7 @@ mark tui
 
 ## 📝 DESCRIPTION
 
-Opens a beautiful, interactive TUI dashboard that provides a complete graphical interface for all mark functionality using Gum components.
+Opens a beautiful, interactive TUI dashboard that provides a complete graphical interface for all mark functionality using Gum components. Features a clean design with Solarized blue color scheme and enhanced visual elements.
 
 ## 📋 REQUIREMENTS
 
@@ -441,7 +441,10 @@ Opens a beautiful, interactive TUI dashboard that provides a complete graphical 
 
 ## 🌟 FEATURES
 
-- Visual navigation menus with styled components
+- Clean layout without border boxes
+- Solarized blue color scheme
+- Enhanced visual elements with animations
+- Improved navigation flow with breadcrumbs
 - Template management interface
 - Prompt generation workflows
 - Configuration management
@@ -451,7 +454,7 @@ Opens a beautiful, interactive TUI dashboard that provides a complete graphical 
 ## 🚀 EXAMPLES
 
 ```bash
-# Launch TUI
+# Launch enhanced TUI
 mark tui
 ```
 EOF

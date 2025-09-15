@@ -1,0 +1,1103 @@
+#!/bin/bash
+
+# mark-tui - Enhanced Terminal User Interface for mark CLI
+# A clean, modern TUI with Solarized blue color scheme
+
+# Solarized color palette constants
+SOLARIZED_BASE03=234    # Background
+SOLARIZED_BASE02=235    # Background highlights
+SOLARIZED_BASE01=240    # Comments / secondary content
+SOLARIZED_BASE00=241    # Body text / primary content
+SOLARIZED_BASE0=244     # Emphasized text
+SOLARIZED_BASE1=245     # Headers
+SOLARIZED_BASE2=254     # Background of selected content
+SOLARIZED_BASE3=230     # Background of main content
+SOLARIZED_YELLOW=136    # Numeric literals
+SOLARIZED_ORANGE=166    # Special keywords
+SOLARIZED_RED=160       # Operators
+SOLARIZED_MAGENTA=125   # Regex, escape chars
+SOLARIZED_VIOLET=61     # Function/method names
+SOLARIZED_BLUE=33       # Class names, reserved words
+SOLARIZED_CYAN=37       # Language constructs
+SOLARIZED_GREEN=64      # Strings
+
+# Navigation stack for breadcrumbs
+declare -a NAVIGATION_STACK=()
+
+# Push to navigation stack
+nav_push() {
+    NAVIGATION_STACK+=("$1")
+}
+
+# Pop from navigation stack
+nav_pop() {
+    if [[ ${#NAVIGATION_STACK[@]} -gt 0 ]]; then
+        unset NAVIGATION_STACK[${#NAVIGATION_STACK[@]}-1]
+    fi
+}
+
+# Show navigation breadcrumbs
+show_breadcrumbs() {
+    if [[ ${#NAVIGATION_STACK[@]} -gt 0 ]]; then
+        local breadcrumb_path=""
+        for item in "${NAVIGATION_STACK[@]}"; do
+            if [[ -z "$breadcrumb_path" ]]; then
+                breadcrumb_path="$item"
+            else
+                breadcrumb_path="$breadcrumb_path > $item"
+            fi
+        done
+        gum style \
+            --foreground $SOLARIZED_BASE01 \
+            "📍 $breadcrumb_path"
+        echo ""
+    fi
+}
+
+# Animated transition effect
+animated_transition() {
+    local message="$1"
+    local color="${2:-$SOLARIZED_CYAN}"
+    
+    # Simple animation effect
+    gum style --foreground $color "» $message"
+    sleep 0.1
+}
+
+# Check if Gum is installed
+check_gum() {
+    if ! command -v gum &> /dev/null; then
+        echo "Error: Gum is not installed. Please install Gum to use the TUI."
+        echo "See: https://github.com/charmbracelet/gum#installation"
+        exit 1
+    fi
+}
+
+# Clear screen with custom header
+clear_with_header() {
+    clear
+    
+    # Application header with Solarized blue theme
+    gum style \
+        --foreground $SOLARIZED_BLUE \
+        --bold \
+        --align center \
+        "
+    ███╗   ███╗ █████╗ ██████╗  ██████╗██╗  ██╗
+    ████╗ ████║██╔══██╗██╔══██╗██╔════╝██║ ██╔╝
+    ██╔████╔██║███████║██████╔╝██║     █████╔╝ 
+    ██║╚██╔╝██║██╔══██║██╔══██╗██║     ██╔═██╗ 
+    ██║ ╚═╝ ██║██║  ██║██║  ██║╚██████╗██║  ██╗
+    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+    
+    AI Prompt Templating Tool v1.0.0
+    "
+    
+    # Show breadcrumbs
+    show_breadcrumbs
+    
+    # Show current section
+    if [[ -n "$1" ]]; then
+        gum style \
+            --foreground $SOLARIZED_CYAN \
+            --bold \
+            "# $1"
+        echo ""
+    fi
+}
+
+# Show main dashboard
+show_dashboard() {
+    # Clear navigation stack when returning to main dashboard
+    NAVIGATION_STACK=()
+    clear_with_header "Main Dashboard"
+    
+    # Welcome message
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Welcome to mark - The AI Prompt Templating Tool"
+    echo ""
+    
+    # Status bar
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "💡 Navigation: ↑/↓ to select, Enter to confirm, Ctrl+C to exit"
+    echo ""
+    
+    # Main menu with clean layout
+    choice=$(gum choose \
+        --cursor="▶ " \
+        --selected="◉ " \
+        --height=10 \
+        "📝 Template Management" \
+        "⚡ Prompt Generation" \
+        "⚙️  Configuration" \
+        "📚 Help & Documentation" \
+        "🔄 Upgrade mark" \
+        "🗑️  Uninstall mark" \
+        "🚪 Exit")
+    
+    # Handle menu selection
+    case "$choice" in
+        "📝 Template Management")
+            nav_push "Templates"
+            template_management_menu
+            ;;
+        "⚡ Prompt Generation")
+            nav_push "Generation"
+            prompt_generation_menu
+            ;;
+        "⚙️  Configuration")
+            nav_push "Configuration"
+            configuration_menu
+            ;;
+        "📚 Help & Documentation")
+            nav_push "Help"
+            help_menu
+            ;;
+        "🔄 Upgrade mark")
+            upgrade_mark_tui
+            ;;
+        "🗑️  Uninstall mark")
+            uninstall_mark_tui
+            ;;
+        "🚪 Exit"| "")
+            exit_tui
+            ;;
+    esac
+}
+
+# Template Management Menu
+template_management_menu() {
+    clear_with_header "Template Management"
+    
+    # Description
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Manage your prompt templates with these options:"
+    echo ""
+    
+    # Menu
+    choice=$(gum choose \
+        --cursor="▶ " \
+        --selected="◉ " \
+        --height=9 \
+        "📋 List All Templates" \
+        "🔍 Show Template Content" \
+        "➕ Create New Template" \
+        "✏️  Edit Template" \
+        "❌ Delete Template" \
+        "🔄 Rename Template" \
+        "⬅️  Back to Main Menu")
+    
+    case "$choice" in
+        "📋 List All Templates")
+            list_templates_tui
+            ;;
+        "🔍 Show Template Content")
+            show_template_tui
+            ;;
+        "➕ Create New Template")
+            create_template_tui
+            ;;
+        "✏️  Edit Template")
+            edit_template_tui
+            ;;
+        "❌ Delete Template")
+            delete_template_tui
+            ;;
+        "🔄 Rename Template")
+            rename_template_tui
+            ;;
+        "⬅️  Back to Main Menu"| "")
+            nav_pop
+            show_dashboard
+            ;;
+    esac
+}
+
+# Prompt Generation Menu
+prompt_generation_menu() {
+    clear_with_header "Prompt Generation"
+    
+    # Description
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Generate AI prompts from your templates:"
+    echo ""
+    
+    # Menu
+    choice=$(gum choose \
+        --cursor="▶ " \
+        --selected="◉ " \
+        --height=6 \
+        "✨ Interactive Generation Wizard" \
+        "⚡ Quick Generate (with data)" \
+        "🚀 Quick Generate (no data)" \
+        "⬅️  Back to Main Menu")
+    
+    case "$choice" in
+        "✨ Interactive Generation Wizard")
+            interactive_generate_tui
+            ;;
+        "⚡ Quick Generate (with data)")
+            quick_generate_with_data_tui
+            ;;
+        "🚀 Quick Generate (no data)")
+            quick_generate_no_data_tui
+            ;;
+        "⬅️  Back to Main Menu"| "")
+            show_dashboard
+            ;;
+    esac
+}
+
+# Configuration Menu
+configuration_menu() {
+    clear_with_header "Configuration"
+    
+    # Description
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Manage your mark tool configuration:"
+    echo ""
+    
+    # Menu
+    choice=$(gum choose \
+        --cursor="▶ " \
+        --selected="◉ " \
+        --height=7 \
+        "📋 List All Settings" \
+        "✏️  Set Configuration Value" \
+        "🔍 Get Configuration Value" \
+        "🔄 Reset to Defaults" \
+        "⬅️  Back to Main Menu")
+    
+    case "$choice" in
+        "📋 List All Settings")
+            list_config_tui
+            ;;
+        "✏️  Set Configuration Value")
+            set_config_tui
+            ;;
+        "🔍 Get Configuration Value")
+            get_config_tui
+            ;;
+        "🔄 Reset to Defaults")
+            reset_config_tui
+            ;;
+        "⬅️  Back to Main Menu"| "")
+            show_dashboard
+            ;;
+    esac
+}
+
+# Help Menu
+help_menu() {
+    clear_with_header "Help & Documentation"
+    
+    # Description
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Access documentation and information about mark:"
+    echo ""
+    
+    # Menu
+    choice=$(gum choose \
+        --cursor="▶ " \
+        --selected="◉ " \
+        --height=7 \
+        "📖 Main Help" \
+        "📘 Command Reference" \
+        "🎓 Tutorials" \
+        "❓ About mark" \
+        "⬅️  Back to Main Menu")
+    
+    case "$choice" in
+        "📖 Main Help")
+            show_main_help_tui
+            ;;
+        "📘 Command Reference")
+            show_commands_help_tui
+            ;;
+        "🎓 Tutorials")
+            show_tutorials_tui
+            ;;
+        "❓ About mark")
+            show_about_tui
+            ;;
+        "⬅️  Back to Main Menu"| "")
+            show_dashboard
+            ;;
+    esac
+}
+
+# Template Management Functions
+list_templates_tui() {
+    clear_with_header "List Templates"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Showing all available templates:"
+    echo ""
+    
+    # Show loading spinner with better formatting
+    gum spin --title="Loading templates..." --show-output -- bash -c "echo; ./bin/mark template list; echo"
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    template_management_menu
+}
+
+show_template_tui() {
+    clear_with_header "Show Template Content"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter the name of the template to view:"
+    echo ""
+    
+    # Get template name
+    template=$(gum input --placeholder="template_name.md")
+    
+    if [[ -n "$template" ]]; then
+        echo ""
+        animated_transition "Loading template: $template..." $SOLARIZED_CYAN
+        
+        gum style \
+            --foreground $SOLARIZED_CYAN \
+            --bold \
+            "📄 Template Content:"
+        echo ""
+        
+        # Show loading spinner
+        if gum spin --title="Loading template..." --show-output -- ./bin/mark template show "$template"; then
+            gum style \
+                --foreground $SOLARIZED_GREEN \
+                --bold \
+                "✅ Template loaded successfully!"
+        else
+            gum style \
+                --foreground $SOLARIZED_RED \
+                --bold \
+                "❌ Failed to load template"
+        fi
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            --bold \
+            "❌ No template name provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    template_management_menu
+}
+
+create_template_tui() {
+    clear_with_header "Create New Template"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter a name for your new template:"
+    echo ""
+    
+    # Get template name
+    template=$(gum input --placeholder="my_template.md")
+    
+    if [[ -n "$template" ]]; then
+        echo ""
+        if gum confirm "Create new template '$template'?"; then
+            # Show loading spinner
+            gum spin --title="Creating template..." -- ./bin/mark template new "$template"
+            
+            # Enhanced success message with emoji and better formatting
+            gum style \
+                --foreground $SOLARIZED_GREEN \
+                --bold \
+                "✅ Template '$template' created successfully!"
+            
+            # Ask if user wants to edit
+            echo ""
+            if gum confirm "Edit the new template now?"; then
+                animated_transition "Opening editor for $template..." $SOLARIZED_CYAN
+                # Show loading spinner
+                gum spin --title="Opening editor..." -- ./bin/mark template edit "$template"
+                
+                # Enhanced success message
+                gum style \
+                    --foreground $SOLARIZED_GREEN \
+                    --bold \
+                    "✅ Template '$template' edited successfully!"
+            fi
+        fi
+    else
+        # Enhanced error message
+        gum style \
+            --foreground $SOLARIZED_RED \
+            --bold \
+            "❌ No template name provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    template_management_menu
+}
+
+edit_template_tui() {
+    clear_with_header "Edit Template"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter the name of the template to edit:"
+    echo ""
+    
+    # Get template name
+    template=$(gum input --placeholder="template_name.md")
+    
+    if [[ -n "$template" ]]; then
+        echo ""
+        if gum confirm "Edit template '$template'?"; then
+            # Show loading spinner
+            gum spin --title="Opening editor..." -- ./bin/mark template edit "$template"
+            gum style \
+                --foreground $SOLARIZED_GREEN \
+                "Template '$template' edited successfully!"
+        fi
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "No template name provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    template_management_menu
+}
+
+delete_template_tui() {
+    clear_with_header "Delete Template"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter the name of the template to delete:"
+    echo ""
+    
+    # Get template name
+    template=$(gum input --placeholder="template_name.md")
+    
+    if [[ -n "$template" ]]; then
+        echo ""
+        if gum confirm "Are you sure you want to delete template '$template'? This action cannot be undone."; then
+            # Show loading spinner
+            gum spin --title="Deleting template..." -- ./bin/mark template delete "$template"
+            gum style \
+                --foreground $SOLARIZED_GREEN \
+                "Template '$template' deleted successfully!"
+        else
+            gum style \
+                --foreground $SOLARIZED_BASE01 \
+                "Deletion cancelled"
+        fi
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "No template name provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    template_management_menu
+}
+
+rename_template_tui() {
+    clear_with_header "Rename Template"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter the current template name:"
+    echo ""
+    
+    # Get old template name
+    old_name=$(gum input --placeholder="current_template.md")
+    
+    if [[ -n "$old_name" ]]; then
+        echo ""
+        gum style \
+            --foreground $SOLARIZED_BASE1 \
+            "Enter the new template name:"
+        echo ""
+        
+        # Get new template name
+        new_name=$(gum input --placeholder="new_template.md")
+        
+        if [[ -n "$new_name" ]]; then
+            echo ""
+            if gum confirm "Rename template '$old_name' to '$new_name'?"; then
+                # Show loading spinner
+                gum spin --title="Renaming template..." -- ./bin/mark template rename "$old_name" "$new_name"
+                gum style \
+                    --foreground $SOLARIZED_GREEN \
+                    "Template renamed successfully!"
+            else
+                gum style \
+                    --foreground $SOLARIZED_BASE01 \
+                    "Rename cancelled"
+            fi
+        else
+            gum style \
+                --foreground $SOLARIZED_RED \
+                "No new template name provided"
+        fi
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "No current template name provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    template_management_menu
+}
+
+# Prompt Generation Functions
+interactive_generate_tui() {
+    clear_with_header "Interactive Generation Wizard"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Launching the interactive prompt generation wizard..."
+    echo ""
+    
+    # Use the existing interactive generate command
+    if ./bin/mark generate interactive; then
+        gum style \
+            --foreground $SOLARIZED_GREEN \
+            "Prompt generated successfully!"
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "Prompt generation failed"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    prompt_generation_menu
+}
+
+quick_generate_with_data_tui() {
+    clear_with_header "Quick Generate (with data)"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter the template name:"
+    echo ""
+    
+    # Get template name
+    template=$(gum input --placeholder="template_name.md")
+    
+    if [[ -n "$template" ]]; then
+        echo ""
+        gum style \
+            --foreground $SOLARIZED_BASE1 \
+            "Enter the data file path (optional):"
+        echo ""
+        
+        # Get data file
+        data_file=$(gum input --placeholder="data.txt")
+        
+        echo ""
+        gum style \
+            --foreground $SOLARIZED_BASE1 \
+            "Enter output file path (leave empty for stdout):"
+        echo ""
+        
+        # Get output file
+        output_file=$(gum input --placeholder="output.md")
+        
+        echo ""
+        if [[ -n "$output_file" ]]; then
+            # Show loading spinner
+            gum spin --title="Generating prompt..." -- ./bin/mark generate "$template" "$data_file" --out "$output_file"
+            gum style \
+                --foreground $SOLARIZED_GREEN \
+                "Prompt generated and saved to '$output_file'!"
+        else
+            # Show loading spinner
+            gum spin --title="Generating prompt..." --show-output -- ./bin/mark generate "$template" "$data_file"
+        fi
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "No template name provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    prompt_generation_menu
+}
+
+quick_generate_no_data_tui() {
+    clear_with_header "Quick Generate (no data)"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter the template name:"
+    echo ""
+    
+    # Get template name
+    template=$(gum input --placeholder="template_name.md")
+    
+    if [[ -n "$template" ]]; then
+        echo ""
+        gum style \
+            --foreground $SOLARIZED_BASE1 \
+            "Enter output file path (leave empty for stdout):"
+        echo ""
+        
+        # Get output file
+        output_file=$(gum input --placeholder="output.md")
+        
+        echo ""
+        if [[ -n "$output_file" ]]; then
+            # Show loading spinner
+            gum spin --title="Generating prompt..." -- ./bin/mark generate "$template" --out "$output_file"
+            gum style \
+                --foreground $SOLARIZED_GREEN \
+                "Prompt generated and saved to '$output_file'!"
+        else
+            # Show loading spinner
+            gum spin --title="Generating prompt..." --show-output -- ./bin/mark generate "$template"
+        fi
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "No template name provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    prompt_generation_menu
+}
+
+# Configuration Functions
+list_config_tui() {
+    clear_with_header "Configuration Settings"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Current configuration settings:"
+    echo ""
+    
+    animated_transition "Retrieving configuration..." $SOLARIZED_CYAN
+    
+    # Show loading spinner
+    if gum spin --title="Loading configuration..." --show-output -- ./bin/mark config list; then
+        gum style \
+            --foreground $SOLARIZED_GREEN \
+            --bold \
+            "✅ Configuration loaded successfully!"
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            --bold \
+            "❌ Failed to load configuration"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    configuration_menu
+}
+
+set_config_tui() {
+    clear_with_header "Set Configuration Value"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter the configuration key:"
+    echo ""
+    
+    # Get key
+    key=$(gum input --placeholder="editor")
+    
+    if [[ -n "$key" ]]; then
+        echo ""
+        gum style \
+            --foreground $SOLARIZED_BASE1 \
+            "Enter the value for '$key':"
+        echo ""
+        
+        # Get value
+        value=$(gum input --placeholder="vim")
+        
+        if [[ -n "$value" ]]; then
+            echo ""
+            # Show loading spinner
+            gum spin --title="Setting configuration..." -- ./bin/mark config set "$key" "$value"
+            gum style \
+                --foreground $SOLARIZED_GREEN \
+                "Configuration updated: $key=$value"
+        else
+            gum style \
+                --foreground $SOLARIZED_RED \
+                "No value provided"
+        fi
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "No configuration key provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    configuration_menu
+}
+
+get_config_tui() {
+    clear_with_header "Get Configuration Value"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter the configuration key:"
+    echo ""
+    
+    # Get key
+    key=$(gum input --placeholder="editor")
+    
+    if [[ -n "$key" ]]; then
+        echo ""
+        # Show loading spinner
+        gum spin --title="Retrieving configuration..." --show-output -- ./bin/mark config get "$key"
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "No configuration key provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    configuration_menu
+}
+
+reset_config_tui() {
+    clear_with_header "Reset Configuration"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "This will reset all configuration to defaults."
+    echo ""
+    
+    if gum confirm "Reset all configuration to defaults?"; then
+        # Show loading spinner
+        gum spin --title="Resetting configuration..." -- bash -c "rm -f ~/.mark/config.data 2>/dev/null || true"
+        gum style \
+            --foreground $SOLARIZED_GREEN \
+            "Configuration reset to defaults!"
+    else
+        gum style \
+            --foreground $SOLARIZED_BASE01 \
+            "Reset cancelled"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    configuration_menu
+}
+
+# Help Functions
+show_main_help_tui() {
+    clear_with_header "Main Help"
+    
+    # Show loading spinner
+    gum spin --title="Loading help..." --show-output -- ./bin/mark help
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    help_menu
+}
+
+show_commands_help_tui() {
+    clear_with_header "Command Reference"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "Enter command name (generate, template, config, etc.):"
+    echo ""
+    
+    # Get command
+    command=$(gum input --placeholder="generate")
+    
+    if [[ -n "$command" ]]; then
+        echo ""
+        # Show loading spinner
+        gum spin --title="Loading command help..." --show-output -- ./bin/mark help "$command"
+    else
+        gum style \
+            --foreground $SOLARIZED_RED \
+            "No command name provided"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    help_menu
+}
+
+show_tutorials_tui() {
+    clear_with_header "Tutorials"
+    
+    animated_transition "Loading tutorials information..." $SOLARIZED_CYAN
+    
+    cat << 'EOF' | gum format -t markdown
+## 🎓 Tutorials
+
+**Tutorials are available in the examples/tutorials directory.**
+
+### 📚 Available Tutorials
+
+- **Beginner**: Basic template creation and variable substitution
+- **Intermediate**: Conditional blocks, loop structures, and file inclusion  
+- **Advanced**: Template inheritance, dynamic selection, and performance optimization
+- **Ninja**: Self-optimizing systems, AI agent orchestration, and cross-domain synthesis
+
+### ▶️ Running Tutorials
+
+```bash
+# Run all tutorials
+./tests/run_tutorials.sh
+
+# Or check the examples/tutorials directory for individual tutorials
+```
+
+### 📖 Documentation
+
+- **Repository**: https://github.com/AR-92/mark
+- **Complete Documentation**: See README.md for detailed information
+- **Issues**: Report bugs at https://github.com/AR-92/mark/issues
+EOF
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_GREEN \
+        --bold \
+        "✅ Tutorials information loaded successfully!"
+    echo ""
+    
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    help_menu
+}
+
+show_about_tui() {
+    clear_with_header "About mark"
+    
+    animated_transition "Loading information..." $SOLARIZED_CYAN
+    
+    cat << 'EOF' | gum format -t markdown
+# ❓ About mark - AI Prompt Templating Tool
+
+**Version:** 1.0.0
+
+## 📝 Description
+
+`mark` is a powerful Bash-based tool for generating AI/MCP-ready prompts from templates with support for placeholders, file substitution, conditional blocks, and loops.
+
+## ✨ Features
+
+- **Placeholders**: `{{variable_name}}` for simple variable substitution
+- **File Substitution**: `{{@file_path}}` to include content from other files
+- **Conditional Blocks**: `{{#if condition}}...{{/if}}` for conditional content
+- **Loop Blocks**: `{{#each array}}...{{/each}}` for iterating over lists
+- **Template Management**: List, show, create, edit, delete, and rename templates
+- **Configuration Management**: Set, get, and list configuration options
+- **Interactive TUI**: Beautiful terminal interface with Gum integration
+
+## 🚀 The Power of mark for AI Agents and Prompt Creation
+
+`mark` transforms how AI agents and developers create, manage, and deploy prompts by providing a robust templating system that enables:
+
+### 1. Dynamic Prompt Generation
+Generate thousands of unique prompts from a single template by varying input parameters.
+
+### 2. Modular Prompt Architecture
+Build complex, reusable prompt components that can be combined and nested.
+
+### 3. Context-Aware AI Agents
+Enable AI agents to dynamically construct prompts based on user context and preferences.
+
+### 4. Production-Ready Prompt Orchestration
+Deploy AI systems that generate prompts on-demand with error handling and validation.
+
+## 🔗 Links
+
+- **Repository**: https://github.com/AR-92/mark
+- **Documentation**: See README.md for detailed information
+- **Issues**: Report bugs at https://github.com/AR-92/mark/issues
+
+## 💻 Made with ❤️ for AI developers and prompt engineers
+EOF
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_GREEN \
+        --bold \
+        "✅ Information loaded successfully!"
+    echo ""
+    
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    help_menu
+}
+
+# System Functions
+upgrade_mark_tui() {
+    clear_with_header "Upgrade mark"
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "This will upgrade mark to the latest version."
+    echo ""
+    
+    if gum confirm "Upgrade mark to the latest version?"; then
+        # Show loading spinner
+        gum spin --title="Upgrading mark..." --show-output -- ./bin/mark upgrade
+        gum style \
+            --foreground $SOLARIZED_GREEN \
+            "mark upgraded successfully!"
+    else
+        gum style \
+            --foreground $SOLARIZED_BASE01 \
+            "Upgrade cancelled"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    show_dashboard
+}
+
+uninstall_mark_tui() {
+    clear_with_header "Uninstall mark"
+    
+    gum style \
+        --foreground $SOLARIZED_RED \
+        --bold \
+        "🚨 WARNING: This will remove all mark components from your system!"
+    echo ""
+    
+    gum style \
+        --foreground $SOLARIZED_BASE1 \
+        "This action cannot be undone. All templates and configuration will be removed."
+    echo ""
+    
+    if gum confirm "Are you absolutely sure you want to uninstall mark?"; then
+        if gum confirm "This action cannot be undone. Continue?"; then
+            # Show loading spinner
+            gum spin --title="Uninstalling mark..." --show-output -- ./bin/mark uninstall
+            gum style \
+                --foreground $SOLARIZED_GREEN \
+                "mark uninstalled successfully!"
+        else
+            gum style \
+                --foreground $SOLARIZED_BASE01 \
+                "Uninstall cancelled"
+        fi
+    else
+        gum style \
+            --foreground $SOLARIZED_BASE01 \
+            "Uninstall cancelled"
+    fi
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        "Press Enter to continue..."
+    gum input --placeholder="" --width=1 > /dev/null
+    show_dashboard
+}
+
+# Exit function
+exit_tui() {
+    clear_with_header "Goodbye"
+    
+    gum style \
+        --foreground $SOLARIZED_CYAN \
+        --align center \
+        --bold \
+        "
+    Thank you for using mark!
+    
+    🚀 Happy prompting!
+    "
+    
+    echo ""
+    gum style \
+        --foreground $SOLARIZED_BASE01 \
+        --align center \
+        "See you next time! 👋"
+    echo ""
+    
+    exit 0
+}
+
+# Main function
+main() {
+    # Check if Gum is installed
+    check_gum
+    
+    # Show the main dashboard
+    show_dashboard
+}
+
+# Run main function
+main "$@"
