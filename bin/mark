@@ -26,17 +26,17 @@ if [[ -f "$LIB_DIR/core/enhanced_config.sh" ]]; then
     source "$LIB_DIR/core/enhanced_config.sh"
 fi
 
+# Source color utilities if available
+if [[ -f "$LIB_DIR/utils/colors.sh" ]]; then
+    source "$LIB_DIR/utils/colors.sh"
+fi
+
 # Source core functions
 source "$LIB_DIR/core/logging.sh"
 
 # Source utility functions
 source "$LIB_DIR/utils/parser.sh"
 source "$LIB_DIR/utils/processor.sh"
-
-# Source color utilities if available
-if [[ -f "$LIB_DIR/utils/colors.sh" ]]; then
-    source "$LIB_DIR/utils/colors.sh"
-fi
 
 # Source command functions
 source "$LIB_DIR/commands/generate.sh"
@@ -63,7 +63,7 @@ fi
 # Main command router
 case "${1:-}" in
     generate|g)
-        if [[ -z "$2" ]] && [[ "$2" != "--interactive" ]] && [[ "$2" != "-i" ]]; then
+        if [[ -z "$2" ]]; then
             log "ERROR: Missing template argument for generate command"
             echo "Error: Missing template argument for generate command" >&2
             show_help

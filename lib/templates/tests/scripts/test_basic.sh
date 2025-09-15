@@ -21,7 +21,7 @@ echo -e "${BLUE}BASIC FUNCTIONALITY TESTS${NC}"
 run_test_with_output \
     "Help command displays help text" \
     "$MARK_SCRIPT help" \
-    "mark - AI prompt templating tool"
+    "mark 1.0.0 - AI prompt templating tool"
 
 # Test 2: Help command logs correctly
 run_log_test \
