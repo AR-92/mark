@@ -45,6 +45,11 @@ if [[ -f "$LIB_DIR/commands/template.sh" ]]; then
     source "$LIB_DIR/commands/template.sh"
 fi
 
+# Check if upgrade.sh exists in the lib/commands directory
+if [[ -f "$LIB_DIR/commands/upgrade.sh" ]]; then
+    source "$LIB_DIR/commands/upgrade.sh"
+fi
+
 # Main command router
 case "${1:-}" in
     generate)
@@ -75,6 +80,14 @@ case "${1:-}" in
             template_command "$2" "$3" "$4" "$5"
         else
             echo "Error: Template command not available" >&2
+            exit 1
+        fi
+        ;;
+    upgrade)
+        if declare -f upgrade_mark >/dev/null; then
+            upgrade_mark
+        else
+            echo "Error: Upgrade command not available" >&2
             exit 1
         fi
         ;;

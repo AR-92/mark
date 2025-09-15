@@ -16,6 +16,7 @@ COMMANDS:
     clear                         Clear all logs
     config [set|get|list] [key] [value]  Manage configuration
     template [list|show|new|edit|delete|rename] [args]  Manage templates
+    upgrade                       Upgrade mark to latest version
     version                       Show version information
     help                          Show this help message
 
@@ -46,6 +47,7 @@ EXAMPLES:
     mark template edit my_template.md
     mark template delete my_template.md
     mark template rename old_name new_name
+    mark upgrade
     mark version
     mark help
 
@@ -131,10 +133,10 @@ SUBCOMMANDS:
 
 CONFIGURABLE KEYS:
     template_dirs         List of template directories (colon-separated)
-    default_template_dir  Default directory for new templates
-    editor                Default editor for template operations
-    use_fzf               Enable/disable fuzzy finder (true/false)
-    data_file_formats     Allowed data file formats (comma-separated)
+    default_template_dir  Directory to use by default for new templates
+    editor                Default editor for template new/edit
+    use_fzf               Whether to use fuzzy finder when selecting templates
+    data_file_formats     Allowed formats for data input (json, yaml, toml)
 
 EXAMPLES:
     mark config set editor nvim
@@ -142,6 +144,30 @@ EXAMPLES:
     mark config get editor
     mark config list
     mark config wizard
+EOF
+            ;;
+        upgrade)
+            cat << 'EOF'
+UPGRADE - Upgrade mark to latest version
+
+USAGE:
+    mark upgrade
+
+DESCRIPTION:
+    Upgrade mark CLI tool to the latest version from GitHub.
+    Your templates and configuration will be preserved.
+
+WHAT THIS DOES:
+    - Downloads latest version from GitHub
+    - Backs up current installation
+    - Installs new version
+    - Preserves templates and configuration
+
+OPTIONS:
+    None
+
+EXAMPLES:
+    mark upgrade
 EOF
             ;;
         *)
