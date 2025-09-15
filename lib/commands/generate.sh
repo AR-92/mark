@@ -2,10 +2,31 @@
 
 # mark - Generate command
 
+# Source interactive utilities if available
+if [[ -f "/home/rana/Documents/mark/lib/utils/interactive.sh" ]]; then
+    source "/home/rana/Documents/mark/lib/utils/interactive.sh"
+fi
+
+# Source interactive generate if available
+if [[ -f "/home/rana/Documents/mark/lib/commands/generate_interactive.sh" ]]; then
+    source "/home/rana/Documents/mark/lib/commands/generate_interactive.sh"
+fi
+
 # Generate command
 generate_prompt() {
     local template_file="$1"
     local data_file="$2"
+    
+    # Check if interactive mode is requested
+    if [[ "$template_file" == "--interactive" ]] || [[ "$template_file" == "-i" ]]; then
+        if declare -f generate_prompt_interactive >/dev/null; then
+            generate_prompt_interactive
+            return $?
+        else
+            echo "Error: Interactive mode not available" >&2
+            return 1
+        fi
+    fi
     
     # Check if template file exists
     if [[ ! -f "$template_file" ]]; then
@@ -21,51 +42,17 @@ generate_prompt() {
     # Process data file if provided
     parse_data_file "$data_file"
     
+    # Read template
+    local template_content
+    template_content=$(cat "$template_file")
+    
     # Process template content
     
     # Handle #each loop blocks first
     template_content=$(process_each_blocks "$template_content")
     
-    # Debug output
-    # echo "DEBUG: After processing #each blocks:" >&2
-    # echo "$template_content" >&2
-    
     # Handle #if conditional blocks
     template_content=$(process_if_blocks "$template_content")
-    
-    # Debug output
-    # echo "DEBUG: After processing #if blocks:" >&2
-    # echo "$template_content" >&2
-    
-    # Handle file substitution: {{@file_path}}
-    while [[ "$template_content" =~ \{\{(@[^}]+)\}\} ]]; do
-        local file_path="${BASH_REMATCH[1]#@}"
-        local file_content=""
-        
-        # Resolve relative paths based on template file location
-        local resolved_file_path=""
-        if [[ "$file_path" == /* ]]; then
-            # Absolute path
-            resolved_file_path="$file_path"
-        else
-            # Relative path - resolve relative to template file directory
-            local template_dir=$(dirname "$template_file")
-            resolved_file_path="$template_dir/$file_path"
-        fi
-        
-        # Check if file exists and read its content
-        if [[ -f "$resolved_file_path" ]]; then
-            file_content=$(cat "$resolved_file_path")
-        else
-            file_content="[File not found: $file_path]"
-        fi
-        
-        # Replace the placeholder with file content using a more robust approach
-        # Use a unique delimiter that's unlikely to appear in file content
-        local delimiter="MARK_FILE_DELIMITER_$(date +%s)_$"
-        template_content="${template_content//\{\{@$file_path\}\}/$delimiter}"
-        template_content="${template_content//$delimiter/$file_content}"
-    done
     
     # Handle regular variable substitution: {{variable_name}}
     # Process environment variables and data file values
@@ -92,13 +79,63 @@ generate_prompt() {
         # Properly escape special regex characters for sed
         local escaped_value="$var_value"
         escaped_value="${escaped_value//\\/\\\\}"
-        escaped_value="${escaped_value//\&/\\&}"
+        escaped_value="${escaped_value//\&/\\\&}"
         escaped_value="${escaped_value//\//\\/}"
         
         # Replace ALL occurrences globally using sed for robustness
         template_content=$(echo "$template_content" | sed "s/{{$var_name}}/$escaped_value/g")
         
         iteration=$((iteration + 1))
+    done
+    
+    # Handle file substitution: {{@file_path}}
+    while [[ "$template_content" =~ \{\{(@[^}]+)\}\} ]]; do
+        local file_path="${BASH_REMATCH[1]#@}"
+        local file_content=""
+        
+        # Handle file substitution: {{@file_path}}
+    # Process one match at a time to avoid infinite loops
+    local temp_content="$template_content"
+    template_content=""
+    
+    while [[ "$temp_content" =~ \{\{(@[^}]+)\}\} ]]; do
+        # Extract everything before the match
+        local before="${temp_content%%\{\{*@*}\}*}"
+        
+        # Extract the file path
+        local match="${BASH_REMATCH[0]}"
+        local file_path="${BASH_REMATCH[1]#@}"
+        
+        # Extract everything after the match
+        local after="${temp_content#*$match}"
+        
+        # Get file content
+        local file_content=""
+        local resolved_file_path=""
+        if [[ "$file_path" == /* ]]; then
+            # Absolute path
+            resolved_file_path="$file_path"
+        else
+            # Relative path - resolve relative to template file directory
+            local template_dir=$(dirname "$template_file")
+            resolved_file_path="$template_dir/$file_path"
+        fi
+        
+        if [[ -f "$resolved_file_path" ]]; then
+            file_content=$(cat "$resolved_file_path")
+        else
+            file_content="[File not found: $file_path]"
+        fi
+        
+        # Add processed content to result
+        template_content="${template_content}${before}${file_content}"
+        
+        # Continue with the rest of the content
+        temp_content="$after"
+    done
+    
+    # Add any remaining content
+    template_content="${template_content}${temp_content}"
     done
     
     # Output generated prompt

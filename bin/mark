@@ -21,6 +21,11 @@ fi
 # Source configuration
 source "$LIB_DIR/core/config.sh"
 
+# Check if enhanced_config.sh exists in the lib/core directory
+if [[ -f "$LIB_DIR/core/enhanced_config.sh" ]]; then
+    source "$LIB_DIR/core/enhanced_config.sh"
+fi
+
 # Source core functions
 source "$LIB_DIR/core/logging.sh"
 
@@ -33,11 +38,17 @@ source "$LIB_DIR/commands/generate.sh"
 source "$LIB_DIR/commands/list.sh"
 source "$LIB_DIR/commands/clear.sh"
 source "$LIB_DIR/commands/help.sh"
+source "$LIB_DIR/commands/config.sh"
+
+# Check if template.sh exists in the lib/commands directory
+if [[ -f "$LIB_DIR/commands/template.sh" ]]; then
+    source "$LIB_DIR/commands/template.sh"
+fi
 
 # Main command router
 case "${1:-}" in
     generate)
-        if [[ -z "$2" ]]; then
+        if [[ -z "$2" ]] && [[ "$2" != "--interactive" ]] && [[ "$2" != "-i" ]]; then
             log "ERROR: Missing template argument for generate command"
             echo "Error: Missing template argument for generate command" >&2
             show_help
@@ -51,9 +62,33 @@ case "${1:-}" in
     clear)
         clear_logs
         ;;
+    config)
+        if declare -f config_command >/dev/null; then
+            config_command "$2" "$3" "$4"
+        else
+            echo "Error: Config command not available" >&2
+            exit 1
+        fi
+        ;;
+    template)
+        if declare -f template_command >/dev/null; then
+            template_command "$2" "$3" "$4" "$5"
+        else
+            echo "Error: Template command not available" >&2
+            exit 1
+        fi
+        ;;
     help|--help|-h)
-        show_help
+        if [[ -n "$2" ]]; then
+            show_detailed_help "$2"
+        else
+            show_help
+        fi
         log "Help displayed"
+        ;;
+    version|--version|-v)
+        echo "mark 1.0.0"
+        log "Version displayed"
         ;;
     "")
         log "ERROR: No command provided"

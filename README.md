@@ -101,7 +101,9 @@ Deploy AI systems that generate prompts on-demand with:
 - **Data Files**: Simple key=value format for variable definitions
 - **Environment Variables**: Automatic integration with system environment
 - **Comprehensive Logging**: Full audit trail of all operations
-- **CLI Interface**: Intuitive commands (`generate`, `list`, `clear`, `help`)
+- **Template Management**: List, show, create, edit, delete, and rename templates
+- **Configuration Management**: Set, get, and list configuration options
+- **CLI Interface**: Intuitive commands (`generate`, `list`, `clear`, `config`, `template`, `version`, `help`)
 
 ## AI Agent Integration
 
@@ -160,6 +162,22 @@ sudo cp mark /usr/local/bin/
 # Clear logs
 ./mark clear
 
+# Manage configuration
+./mark config set editor nvim
+./mark config get editor
+./mark config list
+
+# Manage templates
+./mark template list
+./mark template show my_template.md
+./mark template new my_new_template
+./mark template edit my_template.md
+./mark template delete my_template.md
+./mark template rename old_name new_name
+
+# Show version
+./mark version
+
 # Show help
 ./mark help
 ```
@@ -186,24 +204,6 @@ mark/
 │   └── templates/       # Built-in templates (optional)
 ├── tests/               # Test suite
 │   └── tests/           # Test suite
-```
-
-See `examples/README.md` for detailed information about the example templates and tutorials.
-
-## Template Syntax
-├── examples/             # Example templates and data
-│   ├── data/            # Example data files
-│   ├── templates/       # Example templates
-│   ├── tutorials/       # Comprehensive tutorials
-│   └── README.md        # Examples documentation
-├── docs/                # Documentation
-├── conf/                # Configuration files
-├── dist/                # Distribution packages
-├── README.md            # Project documentation
-├── LICENSE              # MIT License
-├── CHANGELOG.md         # Version history
-├── PROJECT_SUMMARY.md   # Project summary
-└── .gitignore           # Git ignore file
 ```
 
 See `examples/README.md` for detailed information about the example templates and tutorials.
@@ -381,6 +381,51 @@ Clear all logs:
 ./mark clear
 ```
 
+### Config
+Manage configuration options:
+```bash
+# Set configuration
+./mark config set editor nvim
+./mark config set template_dirs "~/.mark/templates:/usr/local/share/mark/templates"
+./mark config set default_template_dir "~/.mark/templates"
+./mark config set use_fzf true
+./mark config set data_file_formats "json,yaml,toml"
+
+# Get configuration
+./mark config get editor
+
+# List all configuration
+./mark config list
+```
+
+### Template
+Manage templates:
+```bash
+# List templates
+./mark template list
+
+# Show template content
+./mark template show my_template.md
+
+# Create a new template
+./mark template new my_new_template
+
+# Edit a template
+./mark template edit my_template.md
+
+# Delete a template
+./mark template delete my_template.md
+
+# Rename a template
+./mark template rename old_name new_name
+```
+
+### Version
+Show version information:
+```bash
+./mark version
+```
+
 ### Help
 Show help information:
 ```bash
@@ -451,6 +496,43 @@ The tool can be configured using the configuration file located at `conf/mark.co
 - `DEBUG` - Enable debug mode (default: `false`)
 
 To customize these settings, edit the `conf/mark.conf` file according to your needs.
+
+You can also manage configuration using the `config` command:
+```bash
+# Set configuration values
+./mark config set editor nvim
+./mark config set template_dirs "~/.mark/templates:/usr/local/share/mark/templates"
+
+# Get configuration values
+./mark config get editor
+
+# List all configuration
+./mark config list
+```
+
+## Template Management
+
+`mark` provides comprehensive template management capabilities:
+
+```bash
+# List all templates
+./mark template list
+
+# Show template content
+./mark template show template_name
+
+# Create a new template
+./mark template new template_name
+
+# Edit an existing template
+./mark template edit template_name
+
+# Delete a template
+./mark template delete template_name
+
+# Rename a template
+./mark template rename old_name new_name
+```
 
 ## Tutorials
 

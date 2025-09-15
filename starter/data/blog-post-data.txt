@@ -1,0 +1,5 @@
+topic=10 Tips for Better Sleep
+audience=Health-conscious adults
+tone=Informative yet conversational
+length=800-word
+key_points=Importance of sleep schedule, bedroom environment optimization, diet and exercise impact, stress management techniques

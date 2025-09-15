@@ -1,0 +1,5 @@
+product_name=UltraSound Pro Wireless Headphones
+product_category=Audio Equipment
+key_features=30-hour battery life, noise cancellation, Bluetooth 5.0, comfortable over-ear design
+target_audience=Audio enthusiasts and professionals
+unique_selling_point=Industry-leading 30-hour battery life with premium sound quality
