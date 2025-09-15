@@ -60,6 +60,16 @@ if [[ -f "$LIB_DIR/commands/uninstall.sh" ]]; then
     source "$LIB_DIR/commands/uninstall.sh"
 fi
 
+# Check if template_interactive.sh exists in the lib/commands directory
+if [[ -f "$LIB_DIR/commands/template_interactive.sh" ]]; then
+    source "$LIB_DIR/commands/template_interactive.sh"
+fi
+
+# Check if generate_interactive.sh exists in the lib/commands directory
+if [[ -f "$LIB_DIR/commands/generate_interactive.sh" ]]; then
+    source "$LIB_DIR/commands/generate_interactive.sh"
+fi
+
 # Main command router
 case "${1:-}" in
     generate|g)
@@ -69,7 +79,17 @@ case "${1:-}" in
             show_help
             exit 1
         fi
-        generate_prompt "$2" "$3"
+        # Check if we're in interactive mode
+        if [[ "$2" == "interactive" ]] || [[ "$2" == "i" ]]; then
+            if declare -f generate_interactive >/dev/null; then
+                generate_interactive
+            else
+                echo "Error: Interactive generate command not available (requires Gum)" >&2
+                exit 1
+            fi
+        else
+            generate_prompt "$2" "$3"
+        fi
         ;;
     list|l)
         list_prompts

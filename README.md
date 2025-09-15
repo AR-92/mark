@@ -103,7 +103,8 @@ Deploy AI systems that generate prompts on-demand with:
 - **Comprehensive Logging**: Full audit trail of all operations
 - **Template Management**: List, show, create, edit, delete, and rename templates
 - **Configuration Management**: Set, get, and list configuration options
-- **CLI Interface**: Intuitive commands (`generate`, `list`, `clear`, `config`, `template`, `version`, `help`)
+- **CLI Interface**: Commands (`generate`, `list`, `clear`, `config`, `template`, `version`, `help`)
+- **Interactive Mode** (with Gum): Enhanced interactive experience with fuzzy search, styled prompts, and guided workflows
 
 ## AI Agent Integration
 
@@ -388,7 +389,6 @@ Manage configuration options:
 ./mark config set editor nvim
 ./mark config set template_dirs "~/.mark/templates:/usr/local/share/mark/templates"
 ./mark config set default_template_dir "~/.mark/templates"
-./mark config set use_fzf true
 ./mark config set data_file_formats "json,yaml,toml"
 
 # Get configuration
@@ -509,6 +509,37 @@ You can also manage configuration using the `config` command:
 # List all configuration
 ./mark config list
 ```
+
+## Gum Integration
+
+`mark` can be enhanced with [Gum](https://github.com/charmbracelet/gum) to provide a more interactive and visually appealing user experience. 
+
+### Installation
+
+To set up Gum integration, run the setup script:
+```bash
+./setup_gum.sh
+```
+
+Or install Gum manually according to the [official installation instructions](https://github.com/charmbracelet/gum#installation).
+
+### Interactive Features
+
+Once Gum is installed, you can use the interactive template management:
+
+```bash
+# Launch the interactive template manager
+./mark template interactive
+```
+
+This provides a menu-driven interface for all template operations with fuzzy search capabilities and styled prompts.
+
+### Benefits of Gum Integration
+
+- **Fuzzy Search**: Easily find templates without remembering exact names
+- **Styled Prompts**: Visually appealing interface with colors and formatting
+- **Guided Workflows**: Step-by-step wizards for complex operations
+- **Enhanced UX**: Better user experience with visual feedback and confirmation dialogs
 
 ## Template Management
 

@@ -6,16 +6,6 @@
 # Source the enhanced config for template directory configuration
 source "/home/rana/Documents/mark/lib/core/enhanced_config.sh"
 
-# Source template wizard if available
-if [[ -f "/home/rana/Documents/mark/lib/commands/template_wizard.sh" ]]; then
-    source "/home/rana/Documents/mark/lib/commands/template_wizard.sh"
-fi
-
-# Source template management wizards if available
-if [[ -f "/home/rana/Documents/mark/lib/commands/template_management_wizards.sh" ]]; then
-    source "/home/rana/Documents/mark/lib/commands/template_management_wizards.sh"
-fi
-
 # Template command
 template_command() {
     case "$1" in
@@ -36,86 +26,52 @@ template_command() {
                 echo "Usage: mark template new <template_name>"
                 return 1
             fi
-            # Check if wizard mode is requested
-            if [[ "$3" == "--wizard" ]]; then
-                if declare -f template_new_wizard >/dev/null; then
-                    template_new_wizard "$2"
-                else
-                    echo "Error: Wizard mode not available"
-                    return 1
-                fi
-            else
-                template_new "$2" "$3"
-            fi
+            template_new "$2" "$3"
             ;;
         edit)
-            # Check if wizard mode is requested
-            if [[ "$2" == "--wizard" ]]; then
-                if declare -f template_edit_wizard >/dev/null; then
-                    template_edit_wizard
-                else
-                    echo "Error: Wizard mode not available"
-                    return 1
-                fi
-            else
-                if [[ -z "$2" ]]; then
-                    echo "Error: Missing template name for edit command"
-                    echo "Usage: mark template edit <template_name>"
-                    return 1
-                fi
-                template_edit "$2" "$3"
+            if [[ -z "$2" ]]; then
+                echo "Error: Missing template name for edit command"
+                echo "Usage: mark template edit <template_name>"
+                return 1
             fi
+            template_edit "$2" "$3"
             ;;
         delete)
-            # Check if wizard mode is requested
-            if [[ "$2" == "--wizard" ]]; then
-                if declare -f template_delete_wizard >/dev/null; then
-                    template_delete_wizard
-                else
-                    echo "Error: Wizard mode not available"
-                    return 1
-                fi
-            else
-                if [[ -z "$2" ]]; then
-                    echo "Error: Missing template name for delete command"
-                    echo "Usage: mark template delete <template_name>"
-                    return 1
-                fi
-                template_delete "$2" "$3"
+            if [[ -z "$2" ]]; then
+                echo "Error: Missing template name for delete command"
+                echo "Usage: mark template delete <template_name>"
+                return 1
             fi
+            template_delete "$2" "$3"
             ;;
         rename)
-            # Check if wizard mode is requested
-            if [[ "$2" == "--wizard" ]]; then
-                if declare -f template_rename_wizard >/dev/null; then
-                    template_rename_wizard
-                else
-                    echo "Error: Wizard mode not available"
-                    return 1
-                fi
+            if [[ -z "$2" ]] || [[ -z "$3" ]]; then
+                echo "Error: Missing template names for rename command"
+                echo "Usage: mark template rename <old_name> <new_name>"
+                return 1
+            fi
+            template_rename "$2" "$3" "$4"
+            ;;
+        interactive|i)
+            # Check if interactive template command is available
+            if declare -f template_interactive >/dev/null; then
+                template_interactive
             else
-                if [[ -z "$2" ]] || [[ -z "$3" ]]; then
-                    echo "Error: Missing template names for rename command"
-                    echo "Usage: mark template rename <old_name> <new_name>"
-                    return 1
-                fi
-                template_rename "$2" "$3" "$4"
+                echo "Error: Interactive template command not available (requires Gum)" >&2
+                return 1
             fi
             ;;
         *)
-            echo "Usage: mark template [list|show|new|edit|delete|rename] [args]"
+            echo "Usage: mark template [list|show|new|edit|delete|rename|interactive] [args]"
             echo ""
             echo "Commands:"
             echo "  list                    List all templates"
             echo "  show <template_name>    Show raw content of a template"
             echo "  new <template_name>     Create a new template"
-            echo "  new <template_name> --wizard  Create a new template with wizard"
             echo "  edit <template_name>    Edit an existing template"
-            echo "  edit --wizard           Edit a template with wizard"
             echo "  delete <template_name>  Delete a template"
-            echo "  delete --wizard         Delete a template with wizard"
             echo "  rename <old> <new>      Rename a template"
-            echo "  rename --wizard         Rename a template with wizard"
+            echo "  interactive             Interactive template management (requires Gum)"
             return 1
             ;;
     esac
