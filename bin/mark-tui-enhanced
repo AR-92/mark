@@ -21,6 +21,15 @@ SOLARIZED_BLUE=33       # Class names, reserved words
 SOLARIZED_CYAN=37       # Language constructs
 SOLARIZED_GREEN=64      # Strings
 
+# Consistent styling variables
+TITLE_STYLE="--foreground $SOLARIZED_BLUE --bold"
+SECTION_STYLE="--foreground $SOLARIZED_CYAN --bold"
+SUCCESS_STYLE="--foreground $SOLARIZED_GREEN --bold"
+ERROR_STYLE="--foreground $SOLARIZED_RED --bold"
+WARNING_STYLE="--foreground $SOLARIZED_YELLOW --bold"
+INFO_STYLE="--foreground $SOLARIZED_BASE1"
+HINT_STYLE="--foreground $SOLARIZED_BASE01"
+
 # Navigation stack for breadcrumbs
 declare -a NAVIGATION_STACK=()
 
@@ -79,8 +88,7 @@ clear_with_header() {
     
     # Application header with Solarized blue theme
     gum style \
-        --foreground $SOLARIZED_BLUE \
-        --bold \
+        $TITLE_STYLE \
         --align center \
         "
     ███╗   ███╗ █████╗ ██████╗  ██████╗██╗  ██╗
@@ -99,8 +107,7 @@ clear_with_header() {
     # Show current section
     if [[ -n "$1" ]]; then
         gum style \
-            --foreground $SOLARIZED_CYAN \
-            --bold \
+            $SECTION_STYLE \
             "# $1"
         echo ""
     fi
@@ -112,56 +119,67 @@ show_dashboard() {
     NAVIGATION_STACK=()
     clear_with_header "Main Dashboard"
     
-    # Welcome message
+    # Welcome message with better formatting
     gum style \
-        --foreground $SOLARIZED_BASE1 \
-        "Welcome to mark - The AI Prompt Templating Tool"
+        $TITLE_STYLE \
+        --align center \
+        "Welcome to mark"
+    
+    gum style \
+        $INFO_STYLE \
+        --align center \
+        "The AI Prompt Templating Tool"
+    
     echo ""
     
-    # Status bar
+    # Status bar with keyboard shortcuts
     gum style \
-        --foreground $SOLARIZED_BASE01 \
+        --border rounded \
+        --border-foreground $SOLARIZED_BASE01 \
+        --padding "0 1" \
         "💡 Navigation: ↑/↓ to select, Enter to confirm, Ctrl+C to exit"
     echo ""
     
-    # Main menu with clean layout
+    # Main menu with improved layout and spacing
     choice=$(gum choose \
         --cursor="▶ " \
         --selected="◉ " \
-        --height=10 \
-        "📝 Template Management" \
-        "⚡ Prompt Generation" \
-        "⚙️  Configuration" \
-        "📚 Help & Documentation" \
-        "🔄 Upgrade mark" \
-        "🗑️  Uninstall mark" \
-        "🚪 Exit")
+        --height=12 \
+        --cursor-prefix=" " \
+        --selected-prefix=" " \
+        "📝 Template Management     Manage your prompt templates" \
+        "⚡ Prompt Generation      Create AI prompts from templates" \
+        "⚙️  Configuration         Manage tool settings" \
+        "📚 Help & Documentation   Access guides and information" \
+        "🔄 Upgrade mark          Update to the latest version" \
+        "🗑️  Uninstall mark        Remove mark from your system" \
+        "🚪 Exit                  Close the application")
     
     # Handle menu selection
     case "$choice" in
-        "📝 Template Management")
+        "📝 Template Management     Manage your prompt templates")
             nav_push "Templates"
             template_management_menu
             ;;
-        "⚡ Prompt Generation")
+        "⚡ Prompt Generation      Create AI prompts from templates")
             nav_push "Generation"
             prompt_generation_menu
             ;;
-        "⚙️  Configuration")
+        "⚙️  Configuration         Manage tool settings")
             nav_push "Configuration"
             configuration_menu
             ;;
-        "📚 Help & Documentation")
+        "📚 Help & Documentation   Access guides and information")
             nav_push "Help"
             help_menu
             ;;
-        "🔄 Upgrade mark")
+        "🔄 Upgrade mark          Update to the latest version")
             upgrade_mark_tui
             ;;
-        "🗑️  Uninstall mark")
+        "🗑️  Uninstall mark        Remove mark from your system")
             uninstall_mark_tui
             ;;
-        "🚪 Exit"| "")
+        "🚪 Exit                  Close the application"| "")
             exit_tui
             ;;
     esac

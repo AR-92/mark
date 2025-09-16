@@ -32,7 +32,8 @@ clear_screen() {
     else
         clear
         if command -v gum &> /dev/null; then
-            gum style --align center --bold "MARK - AI Prompt Templating Tool"
+            gum style --align center --bold --foreground 33 "MARK"
+            gum style --align center --foreground 240 "AI Prompt Templating Tool"
         else
             echo "MARK - AI Prompt Templating Tool"
         fi
@@ -1013,31 +1014,37 @@ show_generate_interface() {
 show_main_menu() {
     clear_screen
     
-    # Show main menu
+    # Show main menu with consistent styling
     if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
         gum_section "Main Menu"
     else
-        echo "Main Menu"
+        gum style --bold "Main Menu"
         echo "========="
     fi
     echo ""
     
+    # Welcome message
+    if command -v gum &> /dev/null; then
+        gum style --foreground 240 "Welcome to mark - AI Prompt Templating Tool"
+        echo ""
+    else
+        echo "Welcome to mark - AI Prompt Templating Tool"
+        echo ""
+    fi
+    
     # Use simple menu for non-interactive mode
     if is_interactive && command -v gum &> /dev/null; then
-        # Use Gum filter for interactive mode
-        if declare -f gum_filter_option >/dev/null; then
-            choice=$(gum_filter_option "Select an option..." \
-                "📝 Help" \
-                "⚡ Generate Prompt" \
-                "📁 Template Management" \
-                "⚙️  Configuration" \
-                "🔄 Upgrade" \
-                "🗑️  Uninstall" \
-                "🚪 Exit")
-        else
-            OPTIONS=("📝 Help" "⚡ Generate Prompt" "📁 Template Management" "⚙️  Configuration" "🔄 Upgrade" "🗑️  Uninstall" "🚪 Exit")
-            choice=$(printf '%s\n' "${OPTIONS[@]}" | gum filter --placeholder="Select an option...")
-        fi
+        # Use Gum choose for interactive mode with better formatting
+        choice=$(gum choose \
+            --cursor="▶ " \
+            --selected="◉ " \
+            "📝 Help" \
+            "⚡ Generate Prompt" \
+            "📁 Template Management" \
+            "⚙️  Configuration" \
+            "🔄 Upgrade" \
+            "🗑️  Uninstall" \
+            "🚪 Exit")
     else
         # Use simple numbered menu for non-interactive mode
         echo "1. 📝 Help"
@@ -1048,6 +1055,7 @@ show_main_menu() {
         echo "6. 🗑️  Uninstall"
         echo "7. 🚪 Exit"
         echo ""
+        echo "💡 Use number keys to select an option"
         read -p "Select option (1-7): " choice_num </dev/null
         case "$choice_num" in
             1) choice="📝 Help" ;;
@@ -1060,6 +1068,7 @@ show_main_menu() {
             *) choice="🚪 Exit" ;;
         esac
     fi
+}
     
     case "$choice" in
         "📝 Help")
