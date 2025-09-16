@@ -58,6 +58,15 @@ upgrade_mark() {
         cp -r "$HOME/.local/lib/mark" "$backup_dir/"
     fi
     
+    # Also backup TUI files if they exist
+    if [[ -f "$HOME/.local/bin/mark-tui" ]]; then
+        cp "$HOME/.local/bin/mark-tui" "$backup_dir/"
+    fi
+    
+    if [[ -f "$HOME/.local/bin/mark-tui-enhanced" ]]; then
+        cp "$HOME/.local/bin/mark-tui-enhanced" "$backup_dir/"
+    fi
+    
     echo "  ✅ Backup created at $backup_dir"
     
     # Install new version
@@ -67,6 +76,17 @@ upgrade_mark() {
     if [[ -f "$temp_dir/mark/bin/mark" ]]; then
         cp "$temp_dir/mark/bin/mark" "$HOME/.local/bin/"
         chmod +x "$HOME/.local/bin/mark"
+    fi
+    
+    # Copy all TUI files
+    if [[ -f "$temp_dir/mark/bin/mark-tui" ]]; then
+        cp "$temp_dir/mark/bin/mark-tui" "$HOME/.local/bin/"
+        chmod +x "$HOME/.local/bin/mark-tui"
+    fi
+    
+    if [[ -f "$temp_dir/mark/bin/mark-tui-enhanced" ]]; then
+        cp "$temp_dir/mark/bin/mark-tui-enhanced" "$HOME/.local/bin/"
+        chmod +x "$HOME/.local/bin/mark-tui-enhanced"
     fi
     
     # Copy new lib files
@@ -85,6 +105,10 @@ upgrade_mark() {
     echo "  ✅ mark has been successfully upgraded to $new_version!"
     echo ""
     echo "What's new in this version:"
+    echo "  - Enhanced TUI with completely box-free interface"
+    echo "  - Solarized blue color scheme"
+    echo "  - Improved navigation and flow"
+    echo "  - Better visual styling and animations"
     echo "  - Enhanced upgrade functionality"
     echo "  - Improved error handling"
     echo "  - Bug fixes and performance improvements"

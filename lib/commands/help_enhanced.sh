@@ -474,15 +474,16 @@ mark upgrade
 
 ## 📝 DESCRIPTION
 
-Downloads and installs the latest version of mark from GitHub. Preserves existing templates and configuration during the update.
+Downloads and installs the latest version of mark from GitHub. Preserves existing templates and configuration during the update. Now includes enhanced upgrade functionality that properly handles all TUI files including the enhanced box-free version.
 
 ## 🔄 PROCESS
 
 1. Checks for the latest version availability
 2. Backs up the current installation
 3. Downloads the latest release
-4. Installs the updated version
+4. Installs the updated version with all TUI files
 5. Verifies the installation
+6. Preserves existing templates and configuration
 
 ## 🚀 EXAMPLES
 

@@ -136,6 +136,8 @@ chmod +x mark
 ./install.sh
 ```
 
+**Note:** The installation now includes the enhanced TUI with completely box-free interface. The upgrade process has been enhanced to properly handle all TUI files.
+
 ### Manual Installation
 ```bash
 # Clone the repository
@@ -148,6 +150,21 @@ chmod +x mark
 # Optionally, copy to a directory in your PATH
 sudo cp mark /usr/local/bin/
 ```
+
+### Upgrade Process
+
+The upgrade process has been enhanced to properly handle all TUI files including the enhanced box-free version:
+
+```bash
+# Upgrade to the latest version
+mark upgrade
+```
+
+The enhanced upgrade process:
+- Preserves all existing templates and configuration
+- Properly copies all TUI files including the enhanced box-free version
+- Creates backups of previous installations
+- Handles both `mark-tui` and `mark-tui-enhanced` files
 
 ## Usage
 
