@@ -7,8 +7,7 @@ This document provides comprehensive guidance for AI systems using the `mark` to
 `mark` follows these principles for AI usage:
 1. **Self-documenting**: Every command provides help with `mark help <command>` 🆘
 2. **Predictable**: Consistent behavior across all operations ⚖️
-3. **Guided workflows**: Interactive wizards for complex tasks 🧙
-4. **Zero configuration required**: Sensible defaults for all operations 🎯
+3. **Zero configuration required**: Sensible defaults for all operations 🎯
 
 ## 🚀 Main Commands
 
@@ -17,11 +16,8 @@ This document provides comprehensive guidance for AI systems using the `mark` to
 # Basic generation
 mark generate <template_name> <data_file>
 
-# Interactive generation (guided workflow)
-mark generate --interactive
-
-# Fuzzy search generation
-mark generate --interactive --fuzzy
+# Generate with output file
+mark generate <template_name> <data_file> --out <output_file>
 ```
 
 ### 2. 🎨 Manage Templates
@@ -35,26 +31,14 @@ mark template show <template_name>
 # Create new template
 mark template new <template_name>
 
-# Create new template with wizard
-mark template new <template_name> --wizard
-
 # Edit existing template
 mark template edit <template_name>
-
-# Edit template with wizard
-mark template edit --wizard
 
 # Delete template
 mark template delete <template_name>
 
-# Delete template with wizard
-mark template delete --wizard
-
 # Rename template
 mark template rename <old_name> <new_name>
-
-# Rename template with wizard
-mark template rename --wizard
 ```
 
 ### 3. ⚙️ Configuration
@@ -80,39 +64,6 @@ mark help
 # Show detailed help
 mark help <command>
 ```
-
-## 🧙 Wizard Workflows
-
-### 🌟 Interactive Generation Wizard
-```
-mark generate --interactive
-```
-Workflow:
-1. ✨ Select template from list (fuzzy search if enabled)
-2. 🗨️ Provide values for required variables
-3. 💾 Choose output destination
-4. 👁️ Preview generated content
-5. ✅ Confirm and generate
-
-### 🎨 Template Creation Wizard
-```
-mark template new <template_name> --wizard
-```
-Workflow:
-1. ✅ Confirm template name
-2. 📝 Provide description
-3. 🧮 Define required variables
-4. 🏷️ Add tags (optional)
-5. 📄 Create template with front-matter
-6. ✏️ Optionally edit in editor
-
-### 🛠️ Template Management Wizards
-```
-mark template edit --wizard
-mark template delete --wizard
-mark template rename --wizard
-```
-Each provides a guided workflow for the respective operation. 🔄
 
 ## 📄 Template Structure
 
@@ -165,16 +116,15 @@ mark config set template_dirs "~/.mark/templates:/usr/share/mark"
 1. **Always check help first**: Use `mark help` to understand available commands 🆘
 2. **List templates before use**: Use `mark template list` to see available templates 📋
 3. **Examine templates**: Use `mark template show <name>` to understand template structure 👀
-4. **Use wizards for complex tasks**: Interactive wizards guide through multi-step processes 🧙
-5. **Check configuration**: Use `mark config list` to understand current settings ⚙️
-6. **Handle errors gracefully**: Check exit codes and error messages ⚠️
+4. **Check configuration**: Use `mark config list` to understand current settings ⚙️
+5. **Handle errors gracefully**: Check exit codes and error messages ⚠️
 
 ## 💡 Example Workflows
 
 ### 🎨 Creating and Using a Template
 ```
-# 1. Create template with wizard
-mark template new code_review --wizard
+# 1. Create template
+mark template new code_review
 
 # 2. List templates to verify
 mark template list
@@ -190,16 +140,19 @@ language=Python" > code_review_data.txt
 mark generate code_review code_review_data.txt --out code_review_prompt.txt
 ```
 
-### 🌟 Interactive Prompt Creation
+### 🌟 Prompt Creation
 ```
-# 1. Start interactive mode
-mark generate --interactive
+# 1. List available templates
+mark template list
 
-# 2. Follow guided workflow
-# (AI would interact with the prompts)
+# 2. Examine template structure
+mark template show code_review
 
-# 3. Get generated prompt
+# 3. Generate prompt with data
+mark generate code_review code_review_data.txt --out code_review_prompt.txt
+
+# 4. Get generated prompt
 # (Output displayed or saved to file)
 ```
 
-The tool is designed to be intuitive and self-explanatory, making it ideal for AI systems to use autonomously while still providing guided workflows for complex tasks. 🤖✨
+The tool is designed to be intuitive and self-explanatory, making it ideal for AI systems to use autonomously. 🤖✨

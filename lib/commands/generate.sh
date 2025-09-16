@@ -2,16 +2,6 @@
 
 # mark - Generate command
 
-# Source interactive utilities if available
-if [[ -f "/home/rana/Documents/mark/lib/utils/interactive.sh" ]]; then
-    source "/home/rana/Documents/mark/lib/utils/interactive.sh"
-fi
-
-# Source interactive generate if available
-if [[ -f "/home/rana/Documents/mark/lib/commands/generate_interactive.sh" ]]; then
-    source "/home/rana/Documents/mark/lib/commands/generate_interactive.sh"
-fi
-
 # Generate command
 generate_prompt() {
     local template_file="$1"
@@ -19,13 +9,8 @@ generate_prompt() {
     
     # Check if interactive mode is requested
     if [[ "$template_file" == "--interactive" ]] || [[ "$template_file" == "-i" ]]; then
-        if declare -f generate_prompt_interactive >/dev/null; then
-            generate_prompt_interactive
-            return $?
-        else
-            echo "Error: Interactive mode not available" >&2
-            return 1
-        fi
+        echo "Error: Interactive mode is not available in this version" >&2
+        return 1
     fi
     
     # Check if template file exists
@@ -89,28 +74,11 @@ generate_prompt() {
     done
     
     # Handle file substitution: {{@file_path}}
+    # Process one match at a time to avoid infinite loops
     while [[ "$template_content" =~ \{\{(@[^}]+)\}\} ]]; do
         local file_path="${BASH_REMATCH[1]#@}"
-        local file_content=""
         
-        # Handle file substitution: {{@file_path}}
-    # Process one match at a time to avoid infinite loops
-    local temp_content="$template_content"
-    template_content=""
-    
-    while [[ "$temp_content" =~ \{\{(@[^}]+)\}\} ]]; do
-        # Extract everything before the match
-        local before="${temp_content%%\{\{*@*}\}*}"
-        
-        # Extract the file path
-        local match="${BASH_REMATCH[0]}"
-        local file_path="${BASH_REMATCH[1]#@}"
-        
-        # Extract everything after the match
-        local after="${temp_content#*$match}"
-        
-        # Get file content
-        local file_content=""
+        # Resolve file path
         local resolved_file_path=""
         if [[ "$file_path" == /* ]]; then
             # Absolute path
@@ -121,21 +89,19 @@ generate_prompt() {
             resolved_file_path="$template_dir/$file_path"
         fi
         
+        # Get file content
+        local file_content=""
         if [[ -f "$resolved_file_path" ]]; then
             file_content=$(cat "$resolved_file_path")
         else
             file_content="[File not found: $file_path]"
         fi
         
-        # Add processed content to result
-        template_content="${template_content}${before}${file_content}"
-        
-        # Continue with the rest of the content
-        temp_content="$after"
-    done
-    
-    # Add any remaining content
-    template_content="${template_content}${temp_content}"
+        # Replace the placeholder with file content using literal string replacement
+        # This avoids issues with special characters in file content
+        local placeholder="{{@$file_path}}"
+        # Use parameter expansion for replacement
+        template_content="${template_content//$placeholder/$file_content}"
     done
     
     # Output generated prompt

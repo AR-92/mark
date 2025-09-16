@@ -11,7 +11,6 @@ DEFAULT_TEMPLATE_DIRS=("${HOME}/.mark/templates")
 DEFAULT_EDITOR="vim"
 DEFAULT_USE_FZF=false
 DEFAULT_DATA_FILE_FORMATS=("json" "yaml" "toml")
-DEFAULT_WIZARD_QUESTIONS=("name" "description" "variables" "tags")
 
 # Ensure config directory exists
 mkdir -p "$(dirname "$CONFIG_FILE")"
@@ -68,11 +67,6 @@ config_get() {
                 local IFS=","
                 echo "${DEFAULT_DATA_FILE_FORMATS[*]}"
                 ;;
-            "wizard_questions")
-                # Join array with comma
-                local IFS=","
-                echo "${DEFAULT_WIZARD_QUESTIONS[*]}"
-                ;;
             *)
                 echo ""
                 ;;
@@ -96,5 +90,4 @@ config_list() {
     echo "editor=$DEFAULT_EDITOR (default)"
     echo "use_fzf=$DEFAULT_USE_FZF (default)"
     echo "data_file_formats=$(IFS=","; echo "${DEFAULT_DATA_FILE_FORMATS[*]}") (default)"
-    echo "wizard_questions=$(IFS=","; echo "${DEFAULT_WIZARD_QUESTIONS[*]}") (default)"
 }

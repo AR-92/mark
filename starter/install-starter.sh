@@ -36,9 +36,9 @@ sed -i "s|{{@data/sample-code.js}}|{{@../data/sample-code.js}}|g" "$MARK_DATA_DI
 
 echo "✅ Starter package installation complete!"
 echo ""
-echo "🚀 Get started with mark:"
-echo "   - List templates: mark template list"
-echo "   - Generate a prompt: mark generate --interactive"
-echo "   - Create new templates: mark template new <name> --wizard"
+    echo "Example commands:"
+    echo "   - Generate a prompt: mark generate my_template.md"
+    echo "   - List templates: mark template list"
+    echo "   - Create new templates: mark template new <name>"
 echo ""
 echo "📖 Check out the documentation: mark help"

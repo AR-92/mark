@@ -1,9 +1,0 @@
-expert=true
-role=Software Engineer
-task=implementing a function
-language=Python
-requirements_0=Handle edge cases
-requirements_1=Optimize for time complexity
-constraints_0=Do not use built-in functions
-example_needed=true
-example_code=def reverse_string(s): return s[::-1]

@@ -59,4 +59,3 @@
 - Nested block processing improvements
 - JSON/YAML data file support
 - Plugin architecture for extensibility
-- Web-based graphical interface

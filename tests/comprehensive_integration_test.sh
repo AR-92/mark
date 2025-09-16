@@ -39,21 +39,15 @@ Hello {{name}}!" > $HOME/.mark/templates/test.md
 # Test template show
 ./bin/mark template show test > /dev/null && echo "   PASS: Template show works"
 
-# Test 4: Wizard modes
-echo "4. Testing wizard modes..."
-# Test template creation wizard (with timeout to prevent hanging)
-timeout 2s ./bin/mark template new wizard_test --wizard > /dev/null 2>&1 && echo "   PASS: Template creation wizard works (no errors)" || echo "   PASS: Template creation wizard works (timeout expected)"
+# Test 4: Configuration
+echo "4. Testing configuration..."
+# Test configuration
+./bin/mark config set test_key test_value > /dev/null 2>&1 && echo "   PASS: Configuration set works" || echo "   FAIL: Configuration set failed"
+./bin/mark config get test_key > /dev/null 2>&1 && echo "   PASS: Configuration get works" || echo "   FAIL: Configuration get failed"
+./bin/mark config list > /dev/null 2>&1 && echo "   PASS: Configuration list works" || echo "   FAIL: Configuration list failed"
 
-# Test template edit wizard (with timeout to prevent hanging)
-timeout 2s ./bin/mark template edit --wizard > /dev/null 2>&1 && echo "   PASS: Template edit wizard works (no errors)" || echo "   PASS: Template edit wizard works (timeout expected)"
-
-# Test 5: Interactive mode
-echo "5. Testing interactive mode..."
-# Test interactive generate (with timeout to prevent hanging)
-timeout 2s ./bin/mark generate --interactive > /dev/null 2>&1 && echo "   PASS: Interactive generate works (no errors)" || echo "   PASS: Interactive generate works (timeout expected)"
-
-# Test 6: Version command
-echo "6. Testing version command..."
+# Test 5: Version command
+echo "5. Testing version command..."
 result=$(./bin/mark version)
 if [[ "$result" == "mark 1.0.0" ]]; then
     echo "   PASS: Version command works"
