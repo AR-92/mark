@@ -511,13 +511,16 @@ mark uninstall
 
 ## 📝 DESCRIPTION
 
-Removes all mark components from your system, including executables and libraries. Optionally preserves user templates and configuration.
+Removes all mark components from your system, including the enhanced TUI files. 
 
-## 🧼 REMOVALS
+**WARNING:** This action cannot be undone. All templates and configuration will be removed.
 
-- Executable: `$HOME/.local/bin/mark`
-- Libraries: `$HOME/.local/lib/mark/`
-- Configuration: `$HOME/.mark/` (optional)
+## 🗑️ REMOVALS
+
+- **Executable**: `$HOME/.local/bin/mark`
+- **TUI Files**: `$HOME/.local/bin/mark-tui` and `$HOME/.local/bin/mark-tui-enhanced`
+- **Libraries**: `$HOME/.local/lib/mark/`
+- **Configuration**: `$HOME/.mark/` (optional - user prompted)
 
 ## 🚀 EXAMPLES
 

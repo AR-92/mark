@@ -1042,11 +1042,19 @@ uninstall_mark_tui() {
     
     if gum confirm "Are you absolutely sure you want to uninstall mark?"; then
         if gum confirm "This action cannot be undone. Continue?"; then
-            # Show loading spinner
-            gum spin --title="Uninstalling mark..." --show-output -- ./bin/mark uninstall
-            gum style \
-                --foreground $SOLARIZED_GREEN \
-                "mark uninstalled successfully!"
+            # Show loading spinner and execute uninstall
+            echo ""
+            if gum spin --title="Uninstalling mark..." -- ./bin/mark uninstall; then
+                gum style \
+                    --foreground $SOLARIZED_GREEN \
+                    --bold \
+                    "✅ mark uninstalled successfully!"
+            else
+                gum style \
+                    --foreground $SOLARIZED_RED \
+                    --bold \
+                    "❌ Uninstall failed. Please check the error above."
+            fi
         else
             gum style \
                 --foreground $SOLARIZED_BASE01 \
