@@ -1,37 +1,57 @@
 #!/bin/bash
 
-# mark - Data parsing utilities
+# mark - Parser
+# Template parser with placeholder replacement functionality
 
-# Function to parse simple key=value data file
-parse_data_file() {
-    local data_file="$1"
+parse_template() {
+    local template_file="$1"
+    local data_file="$2"
     
-    if [[ -n "$data_file" && -f "$data_file" ]]; then
-        # Read entire file and process line by line
-        local content
-        content=$(cat "$data_file")
-        
-        while IFS= read -r line || [[ -n "$line" ]]; do
-            # Skip empty lines and comments
-            if [[ -z "$line" ]] || [[ "$line" =~ ^[[:space:]]*$ ]] || [[ "$line" =~ ^[[:space:]]*#.*$ ]]; then
-                continue
-            fi
-            
-            # Split on first =
-            if [[ "$line" =~ ^([^=]+)=(.*)$ ]]; then
-                local key="${BASH_REMATCH[1]}"
-                local value="${BASH_REMATCH[2]}"
-                
-                # Trim whitespace
-                key=$(echo "$key" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-                value=$(echo "$value" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-                
-                # Validate variable name - must start with letter or underscore
-                if [[ "$key" =~ ^[a-zA-Z_][a-zA-Z0-9_]*$ ]]; then
-                    # Declare global variables so they can be accessed
-                    declare -g "$key=$value"
-                fi
-            fi
-        done <<< "$content"
+    # Check if template file exists
+    if [[ ! -f "$template_file" ]]; then
+        echo "Error: Template file not found: $template_file" >&2
+        return 1
     fi
+    
+    # Load data if provided
+    if [[ -n "$data_file" && -f "$data_file" ]]; then
+        source "$data_file"
+    fi
+    
+    # Process template
+    process_template "$template_file"
+}
+
+process_template() {
+    local template_file="$1"
+    
+    # Read template line by line
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        # Process placeholders
+        process_line "$line"
+    done < "$template_file"
+}
+
+process_line() {
+    local line="$1"
+    
+    # Replace placeholders with variable values
+    # This uses bash parameter expansion to replace {{variable}} with $variable
+    # First, let's extract all placeholders from the line
+    local processed_line="$line"
+    
+    # Simple placeholder replacement for {{variable_name}}
+    # We use a while loop to handle multiple placeholders in the same line
+    while [[ "$processed_line" =~ \{\{([a-zA-Z0-9_]+)\}\} ]]; do
+        local placeholder="${BASH_REMATCH[0]}"
+        local variable_name="${BASH_REMATCH[1]}"
+        
+        # Get the value of the variable (if it exists)
+        local variable_value="${!variable_name}"
+        
+        # Replace the placeholder with the variable value
+        processed_line="${processed_line//$placeholder/$variable_value}"
+    done
+    
+    echo "$processed_line"
 }

@@ -1,10 +1,14 @@
 #!/bin/bash
 
-# mark - Clear command
+# mark - Clear Command
+# Clear logs
 
-# Clear command
 clear_logs() {
-    > "$LOG_FILE"
-    log "Logs cleared"
-    echo "Logs cleared successfully."
+    if [[ -f "$LOG_FILE" ]]; then
+        rm "$LOG_FILE"
+        echo "Logs cleared."
+        log "Logs cleared"
+    else
+        echo "No logs to clear."
+    fi
 }

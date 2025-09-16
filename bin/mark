@@ -6,33 +6,31 @@
 # Get the absolute path of this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Determine the library directory path
-# First check if we're running from the local installation
-if [[ -d "$HOME/.local/lib/mark" ]]; then
-    LIB_DIR="$HOME/.local/lib/mark"
-# Then check if we're running from the global installation
-elif [[ -d "/usr/local/lib/mark" ]]; then
-    LIB_DIR="/usr/local/lib/mark"
-# Fallback to relative path (for development)
-else
-    LIB_DIR="$SCRIPT_DIR/../lib"
+# Get the project root directory (parent of bin directory)
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Use the local lib directory
+LIB_DIR="$PROJECT_ROOT/lib"
+
+# Configuration file path
+CONFIG_FILE="${HOME}/.mark.conf"
+
+# Load configuration if it exists
+if [[ -f "$CONFIG_FILE" ]]; then
+    source "$CONFIG_FILE"
 fi
 
-# Source configuration
-source "$LIB_DIR/core/config.sh"
-
-# Check if enhanced_config.sh exists in the lib/core directory
-if [[ -f "$LIB_DIR/core/enhanced_config.sh" ]]; then
-    source "$LIB_DIR/core/enhanced_config.sh"
-fi
-
-# Source color utilities if available
-if [[ -f "$LIB_DIR/utils/colors.sh" ]]; then
-    source "$LIB_DIR/utils/colors.sh"
-fi
+# Set default values if not defined in config file
+LOG_FILE="${LOG_FILE:-${HOME}/.mark.log}"
+TEMPLATE_DIR="${TEMPLATE_DIR:-${HOME}/.mark/templates}"
+TEMPLATE_EXT="${TEMPLATE_EXT:-.md}"
+DATA_EXT="${DATA_EXT:-.md}"
+MAX_RECURSION_DEPTH="${MAX_RECURSION_DEPTH:-10}"
+DEBUG="${DEBUG:-false}"
 
 # Source core functions
 source "$LIB_DIR/core/logging.sh"
+source "$LIB_DIR/core/config.sh"
 
 # Source utility functions
 source "$LIB_DIR/utils/parser.sh"
@@ -44,31 +42,7 @@ source "$LIB_DIR/commands/list.sh"
 source "$LIB_DIR/commands/clear.sh"
 source "$LIB_DIR/commands/help.sh"
 source "$LIB_DIR/commands/config.sh"
-
-# Check if template.sh exists in the lib/commands directory
-if [[ -f "$LIB_DIR/commands/template.sh" ]]; then
-    source "$LIB_DIR/commands/template.sh"
-fi
-
-# Check if upgrade.sh exists in the lib/commands directory
-if [[ -f "$LIB_DIR/commands/upgrade.sh" ]]; then
-    source "$LIB_DIR/commands/upgrade.sh"
-fi
-
-# Check if uninstall.sh exists in the lib/commands directory
-if [[ -f "$LIB_DIR/commands/uninstall.sh" ]]; then
-    source "$LIB_DIR/commands/uninstall.sh"
-fi
-
-# Check if template_interactive.sh exists in the lib/commands directory
-if [[ -f "$LIB_DIR/commands/template_interactive.sh" ]]; then
-    source "$LIB_DIR/commands/template_interactive.sh"
-fi
-
-# Check if generate_interactive.sh exists in the lib/commands directory
-if [[ -f "$LIB_DIR/commands/generate_interactive.sh" ]]; then
-    source "$LIB_DIR/commands/generate_interactive.sh"
-fi
+source "$LIB_DIR/commands/template.sh"
 
 # Main command router
 case "${1:-}" in
@@ -79,17 +53,7 @@ case "${1:-}" in
             show_help
             exit 1
         fi
-        # Check if we're in interactive mode
-        if [[ "$2" == "interactive" ]] || [[ "$2" == "i" ]]; then
-            if declare -f generate_interactive >/dev/null; then
-                generate_interactive
-            else
-                echo "Error: Interactive generate command not available (requires Gum)" >&2
-                exit 1
-            fi
-        else
-            generate_prompt "$2" "$3"
-        fi
+        generate_prompt "$2" "$3"
         ;;
     list|l)
         list_prompts
@@ -98,73 +62,10 @@ case "${1:-}" in
         clear_logs
         ;;
     config|cfg)
-        if declare -f config_command >/dev/null; then
-            config_command "$2" "$3" "$4"
-        else
-            echo "Error: Config command not available" >&2
-            exit 1
-        fi
-        ;;
-    about|info)
-        # Source enhanced about if available
-        if [[ -f "$LIB_DIR/commands/about_enhanced.sh" ]]; then
-            source "$LIB_DIR/commands/about_enhanced.sh"
-            if declare -f show_about_formatted >/dev/null && command -v gum &> /dev/null; then
-                show_about_formatted
-                exit 0
-            fi
-        fi
-        
-        # Fall back to simple about text
-        echo "mark - AI Prompt Templating Tool v1.0.0"
-        echo "======================================"
-        echo ""
-        echo "A powerful tool for generating AI prompts from templates with:"
-        echo "  • Placeholders: {{variable_name}}"
-        echo "  • File inclusion: {{@file_path}}"
-        echo "  • Conditional blocks: {{#if condition}}...{{/if}}"
-        echo "  • Loop/iteration blocks: {{#each array}}...{{/each}}"
-        echo ""
-        echo "For more information, visit: https://github.com/AR-92/mark"
+        config_command "$2" "$3" "$4"
         ;;
     template|t)
-        if declare -f template_command >/dev/null; then
-            template_command "$2" "$3" "$4" "$5"
-        else
-            echo "Error: Template command not available" >&2
-            exit 1
-        fi
-        ;;
-    tui)
-        # Check if mark-tui-simple exists and is executable
-        if [[ -f "$SCRIPT_DIR/mark-tui-simple" ]] && [[ -x "$SCRIPT_DIR/mark-tui-simple" ]]; then
-            "$SCRIPT_DIR/mark-tui-simple"
-        # Fallback to mark-tui-enhanced if simple version not available
-        elif [[ -f "$SCRIPT_DIR/mark-tui-enhanced" ]] && [[ -x "$SCRIPT_DIR/mark-tui-enhanced" ]]; then
-            "$SCRIPT_DIR/mark-tui-enhanced"
-        # Fallback to mark-tui if enhanced version not available
-        elif [[ -f "$SCRIPT_DIR/mark-tui" ]] && [[ -x "$SCRIPT_DIR/mark-tui" ]]; then
-            "$SCRIPT_DIR/mark-tui"
-        else
-            echo "Error: TUI not available. Please ensure mark-tui exists and is executable." >&2
-            exit 1
-        fi
-        ;;
-    upgrade|u)
-        if declare -f upgrade_mark >/dev/null; then
-            upgrade_mark
-        else
-            echo "Error: Upgrade command not available" >&2
-            exit 1
-        fi
-        ;;
-    uninstall|un)
-        if declare -f uninstall_mark >/dev/null; then
-            uninstall_mark
-        else
-            echo "Error: Uninstall command not available" >&2
-            exit 1
-        fi
+        template_command "$2" "$3" "$4"
         ;;
     help|h|--help|-h)
         if [[ -n "$2" ]]; then

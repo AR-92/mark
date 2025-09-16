@@ -1,4 +1,0 @@
-project_name=Customer Portal Redesign
-language=JavaScript
-code_content={{@../data/sample-code.js}}
-review_focus=Performance optimization and security best practices

@@ -1,5 +1,0 @@
-platform=LinkedIn
-topic=Industry Insights from the Recent Tech Conference
-audience=Business professionals and tech enthusiasts
-call_to_action=Share your key takeaways in the comments
-hashtags=#TechConference #IndustryInsights #Networking
