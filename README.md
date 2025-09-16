@@ -105,7 +105,9 @@ Deploy AI systems that generate prompts on-demand with:
 - **Configuration Management**: Set, get, and list configuration options
 - **CLI Interface**: Commands (`generate`, `list`, `clear`, `config`, `template`, `version`, `help`)
 - **Interactive Mode** (with Gum): Enhanced interactive experience with fuzzy search, styled prompts, and guided workflows
-- **Full TUI Dashboard** (with Gum): Beautiful terminal user interface for all mark functionality
+- **Full TUI Dashboard** (with Gum): Beautiful terminal user interface with intuitive navigation and enhanced visual design
+- **Enhanced TUI** (with Gum): Completely box-free interface with default Gum theme and improved user experience
+- **Simplified TUI** (with Gum): Clean, help-page-like format with intuitive navigation and visual styling
 
 ## AI Agent Integration
 
@@ -136,7 +138,7 @@ chmod +x mark
 ./install.sh
 ```
 
-**Note:** The installation now includes the enhanced TUI with completely box-free interface. The upgrade process has been enhanced to properly handle all TUI files.
+**Note:** The installation now includes the enhanced TUI with completely box-free interface and default Gum theme. The upgrade process has been enhanced to properly handle all TUI files including the new simplified TUI (`mark-tui-simple`).
 
 ### Manual Installation
 ```bash
@@ -153,7 +155,7 @@ sudo cp mark /usr/local/bin/
 
 ### Upgrade Process
 
-The upgrade process has been enhanced to properly handle all TUI files including the enhanced box-free version:
+The upgrade process has been enhanced to properly handle all TUI files including the enhanced box-free version and simplified TUI:
 
 ```bash
 # Upgrade to the latest version
@@ -162,9 +164,11 @@ mark upgrade
 
 The enhanced upgrade process:
 - Preserves all existing templates and configuration
-- Properly copies all TUI files including the enhanced box-free version
+- Properly copies all TUI files including the enhanced box-free version and simplified TUI (`mark-tui-simple`)
 - Creates backups of previous installations
 - Handles both `mark-tui` and `mark-tui-enhanced` files
+- Updates all Gum theme and utility files
+- Maintains backward compatibility with existing installations
 
 ## Usage
 
@@ -562,15 +566,15 @@ For the full experience, launch the complete Terminal User Interface (TUI) dashb
 ```
 
 The TUI provides a beautiful, interactive dashboard with:
-- **Completely box-free interface** for a modern, clean appearance
-- Solarized blue color scheme
-- Enhanced visual elements with animations
-- Improved navigation flow with breadcrumbs
-- Template management interface
-- Prompt generation workflows
-- Configuration management
-- Help and documentation browser
-- System operations (upgrade, uninstall)
+- **Clean layout without border boxes** for a modern, minimalist appearance
+- **Default Gum theme** with consistent styling throughout the application
+- **Enhanced visual elements** with animations and better styling
+- **Improved navigation flow** with breadcrumbs and intuitive menus
+- **Template management interface** with form-based editing
+- **Prompt generation workflows** with guided wizards
+- **Configuration management** with Gum forms
+- **Help and documentation browser** with hierarchical navigation
+- **System operations** (upgrade, uninstall) with confirmation dialogs
 
 ### Benefits of Gum Integration
 
@@ -578,6 +582,10 @@ The TUI provides a beautiful, interactive dashboard with:
 - **Styled Prompts**: Visually appealing interface with colors and formatting
 - **Guided Workflows**: Step-by-step wizards for complex operations
 - **Enhanced UX**: Better user experience with visual feedback and confirmation dialogs
+- **Default Gum Theme**: Consistent styling with Solarized color scheme
+- **Form-Based Editing**: Intuitive configuration and template management
+- **Editor Integration**: Seamless nvim/vim integration for template editing
+- **Help Navigation**: Hierarchical help system with categorized information
 - **Full TUI**: Complete dashboard interface for all mark functionality
 
 ## Template Management
@@ -635,8 +643,10 @@ Current test status: 50/50 tests passing
 - `README.md` - This file
 - `TUI_DOCUMENTATION.md` - Complete documentation for the TUI interface
 - `TUI_IMPLEMENTATION_SUMMARY.md` - Technical summary of the TUI implementation
+- `TUI_ENHANCEMENT_SUMMARY.md` - Complete enhancement documentation
 - `GUM_ENHANCEMENT_GUIDE.md` - Guide for using Gum with mark
 - `GUM_INTEGRATION_SUMMARY.md` - Summary of Gum integration features
+- `FINAL_TUI_ENHANCEMENT_SUMMARY.md` - Final summary of all TUI enhancements
 
 ## Contributing
 
