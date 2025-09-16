@@ -138,13 +138,13 @@ case "${1:-}" in
     tui)
         # Check if mark-tui-simple exists and is executable
         if [[ -f "$SCRIPT_DIR/mark-tui-simple" ]] && [[ -x "$SCRIPT_DIR/mark-tui-simple" ]]; then
-            exec "$SCRIPT_DIR/mark-tui-simple"
+            "$SCRIPT_DIR/mark-tui-simple"
         # Fallback to mark-tui-enhanced if simple version not available
         elif [[ -f "$SCRIPT_DIR/mark-tui-enhanced" ]] && [[ -x "$SCRIPT_DIR/mark-tui-enhanced" ]]; then
-            exec "$SCRIPT_DIR/mark-tui-enhanced"
+            "$SCRIPT_DIR/mark-tui-enhanced"
         # Fallback to mark-tui if enhanced version not available
         elif [[ -f "$SCRIPT_DIR/mark-tui" ]] && [[ -x "$SCRIPT_DIR/mark-tui" ]]; then
-            exec "$SCRIPT_DIR/mark-tui"
+            "$SCRIPT_DIR/mark-tui"
         else
             echo "Error: TUI not available. Please ensure mark-tui exists and is executable." >&2
             exit 1

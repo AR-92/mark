@@ -1033,8 +1033,8 @@ show_main_menu() {
     fi
     
     # Use simple menu for non-interactive mode
-    if is_interactive && command -v gum &> /dev/null; then
-        # Use Gum choose for interactive mode with better formatting
+    if command -v gum &> /dev/null; then
+        # Always use Gum choose when Gum is available
         choice=$(gum choose \
             --cursor="▶ " \
             --selected="◉ " \
