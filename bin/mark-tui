@@ -1,7 +1,15 @@
 #!/bin/bash
 
-# mark-tui - Full Terminal User Interface for mark CLI
-# A beautiful, interactive TUI dashboard for the mark prompt templating tool
+# mark-tui - Simplified Terminal User Interface for mark CLI
+# A clean, intuitive TUI using default Gum styling with help-page-like format
+
+# Source the Gum theme
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../lib"
+
+if [[ -f "$LIB_DIR/utils/gum_theme.sh" ]]; then
+    source "$LIB_DIR/utils/gum_theme.sh"
+fi
 
 # Check if Gum is installed
 check_gum() {
@@ -12,802 +20,1317 @@ check_gum() {
     fi
 }
 
-# Show main dashboard
-show_dashboard() {
-    clear
-    
-    # Header
-    gum style \
-        --border rounded \
-        --border-foreground 212 \
-        --align center \
-        --padding "1 3" \
-        --margin "1 0" \
-        "🚀 MARK - AI Prompt Templating Tool v1.0.0"
-    
-    # Status bar
-    gum style \
-        --foreground 240 \
-        --margin "0 0 1 0" \
-        "💡 TIP: Use arrow keys to navigate, Enter to select, and Ctrl+C to exit"
-    
-    # Main menu
-    choice=$(gum choose \
-        --cursor="👉 " \
-        --selected="✅ " \
-        --header="Main Menu" \
-        --cursor-prefix=" " \
-        --selected-prefix=" " \
-        "📝 Template Management" \
-        "⚡ Prompt Generation" \
-        "⚙️  Configuration" \
-        "📚 Help & Documentation" \
-        "🔄 Upgrade mark" \
-        "🗑️  Uninstall mark" \
-        "🚪 Exit")
-    
-    # Handle menu selection
-    case "$choice" in
-        "📝 Template Management")
-            template_management_menu
-            ;;
-        "⚡ Prompt Generation")
-            prompt_generation_menu
-            ;;
-        "⚙️  Configuration")
-            configuration_menu
-            ;;
-        "📚 Help & Documentation")
-            help_menu
-            ;;
-        "🔄 Upgrade mark")
-            upgrade_mark_tui
-            ;;
-        "🗑️  Uninstall mark")
-            uninstall_mark_tui
-            ;;
-        "🚪 Exit"|"")
-            exit_tui
-            ;;
-    esac
+# Check if running in interactive mode
+is_interactive() {
+    [[ -t 0 ]] && [[ -t 1 ]]
 }
 
-# Template Management Menu
-template_management_menu() {
-    clear
-    
-    # Header
-    gum style \
-        --border rounded \
-        --border-foreground 99 \
-        --align center \
-        --padding "1 3" \
-        "📝 Template Management"
-    
-    # Menu
-    choice=$(gum choose \
-        --cursor="👉 " \
-        --selected="✅ " \
-        --header="Template Operations" \
-        --cursor-prefix=" " \
-        --selected-prefix=" " \
-        "📋 List All Templates" \
-        "🔍 Show Template Content" \
-        "➕ Create New Template" \
-        "✏️  Edit Template" \
-        "❌ Delete Template" \
-        "🔄 Rename Template" \
-        "⬅️  Back to Main Menu")
-    
-    case "$choice" in
-        "📋 List All Templates")
-            list_templates_tui
-            ;;
-        "🔍 Show Template Content")
-            show_template_tui
-            ;;
-        "➕ Create New Template")
-            create_template_tui
-            ;;
-        "✏️  Edit Template")
-            edit_template_tui
-            ;;
-        "❌ Delete Template")
-            delete_template_tui
-            ;;
-        "🔄 Rename Template")
-            rename_template_tui
-            ;;
-        "⬅️  Back to Main Menu"| "")
-            show_dashboard
-            ;;
-    esac
-}
-
-# Prompt Generation Menu
-prompt_generation_menu() {
-    clear
-    
-    # Header
-    gum style \
-        --border rounded \
-        --border-foreground 220 \
-        --align center \
-        --padding "1 3" \
-        "⚡ Prompt Generation"
-    
-    # Menu
-    choice=$(gum choose \
-        --cursor="👉 " \
-        --selected="✅ " \
-        --header="Generation Options" \
-        --cursor-prefix=" " \
-        --selected-prefix=" " \
-        "✨ Interactive Generation Wizard" \
-        "⚡ Quick Generate (with data)" \
-        "🚀 Quick Generate (no data)" \
-        "⬅️  Back to Main Menu")
-    
-    case "$choice" in
-        "✨ Interactive Generation Wizard")
-            interactive_generate_tui
-            ;;
-        "⚡ Quick Generate (with data)")
-            quick_generate_with_data_tui
-            ;;
-        "🚀 Quick Generate (no data)")
-            quick_generate_no_data_tui
-            ;;
-        "⬅️  Back to Main Menu"| "")
-            show_dashboard
-            ;;
-    esac
-}
-
-# Configuration Menu
-configuration_menu() {
-    clear
-    
-    # Header
-    gum style \
-        --border rounded \
-        --border-foreground 46 \
-        --align center \
-        --padding "1 3" \
-        "⚙️  Configuration"
-    
-    # Menu
-    choice=$(gum choose \
-        --cursor="👉 " \
-        --selected="✅ " \
-        --header="Configuration Options" \
-        --cursor-prefix=" " \
-        --selected-prefix=" " \
-        "📋 List All Settings" \
-        "✏️  Set Configuration Value" \
-        "🔍 Get Configuration Value" \
-        "🔄 Reset to Defaults" \
-        "⬅️  Back to Main Menu")
-    
-    case "$choice" in
-        "📋 List All Settings")
-            list_config_tui
-            ;;
-        "✏️  Set Configuration Value")
-            set_config_tui
-            ;;
-        "🔍 Get Configuration Value")
-            get_config_tui
-            ;;
-        "🔄 Reset to Defaults")
-            reset_config_tui
-            ;;
-        "⬅️  Back to Main Menu"| "")
-            show_dashboard
-            ;;
-    esac
-}
-
-# Help Menu
-help_menu() {
-    clear
-    
-    # Header
-    gum style \
-        --border rounded \
-        --border-foreground 201 \
-        --align center \
-        --padding "1 3" \
-        "📚 Help & Documentation"
-    
-    # Menu
-    choice=$(gum choose \
-        --cursor="👉 " \
-        --selected="✅ " \
-        --header="Help Options" \
-        --cursor-prefix=" " \
-        --selected-prefix=" " \
-        "📖 Main Help" \
-        "📘 Command Reference" \
-        "🎓 Tutorials" \
-        "❓ About mark" \
-        "⬅️  Back to Main Menu")
-    
-    case "$choice" in
-        "📖 Main Help")
-            show_main_help_tui
-            ;;
-        "📘 Command Reference")
-            show_commands_help_tui
-            ;;
-        "🎓 Tutorials")
-            show_tutorials_tui
-            ;;
-        "❓ About mark")
-            show_about_tui
-            ;;
-        "⬅️  Back to Main Menu"| "")
-            show_dashboard
-            ;;
-    esac
-}
-
-# Template Management Functions
-list_templates_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 99 \
-        --align center \
-        --padding "1 3" \
-        "📋 All Templates"
-    
-    # Show loading spinner
-    gum spin --title="Loading templates..." --show-output -- bash -c "echo; ./bin/mark template list; echo"
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    template_management_menu
-}
-
-show_template_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 99 \
-        --align center \
-        --padding "1 3" \
-        "🔍 Show Template Content"
-    
-    # Get template name
-    template=$(gum input --placeholder="Enter template name")
-    
-    if [[ -n "$template" ]]; then
+# Clear screen with themed header
+clear_screen() {
+    if declare -f gum_clear_screen >/dev/null; then
+        gum_clear_screen
+    else
+        clear
+        if command -v gum &> /dev/null; then
+            gum style --align center --bold --foreground 33 "MARK"
+            gum style --align center --foreground 240 "AI Prompt Templating Tool"
+        else
+            echo "MARK - AI Prompt Templating Tool"
+        fi
         echo ""
-        gum style --border rounded --border-foreground 99 "Template Content:"
-        echo ""
-        # Show loading spinner
-        gum spin --title="Loading template..." --show-output -- ./bin/mark template show "$template"
+    fi
+}
+
+# Show main help page (help-page-like format)
+show_main_help() {
+    clear_screen
+    
+    # Check if help navigator is available
+    if [[ -f "$LIB_DIR/utils/gum_help_navigator.sh" ]]; then
+        source "$LIB_DIR/utils/gum_help_navigator.sh"
+        # Use enhanced help navigator
+        show_help_navigator
+        return
+    fi
+    
+    # Show help using mark's built-in help system
+    if command -v gum &> /dev/null; then
+        ./bin/mark help | gum format
     else
-        gum style --foreground 196 "No template name provided"
+        ./bin/mark help
     fi
     
     echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    template_management_menu
-}
-
-create_template_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 99 \
-        --align center \
-        --padding "1 3" \
-        "➕ Create New Template"
-    
-    # Get template name
-    template=$(gum input --placeholder="Enter template name (without .md extension)")
-    
-    if [[ -n "$template" ]]; then
-        if gum confirm "Create new template '$template'?"; then
-            # Show loading spinner
-            gum spin --title="Creating template..." -- ./bin/mark template new "$template"
-            gum style --foreground 46 "Template '$template' created successfully!"
-            
-            # Ask if user wants to edit
-            if gum confirm "Edit the new template now?"; then
-                # Show loading spinner
-                gum spin --title="Opening editor..." -- ./bin/mark template edit "$template"
-            fi
-        fi
+    if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+        gum_info "Use ↑/↓ arrows to navigate, Enter to select, Ctrl+C to exit"
     else
-        gum style --foreground 196 "No template name provided"
+        echo "Use ↑/↓ arrows to navigate, Enter to select, Ctrl+C to exit"
     fi
-    
     echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    template_management_menu
-}
-
-edit_template_tui() {
-    clear
     
-    gum style \
-        --border rounded \
-        --border-foreground 99 \
-        --align center \
-        --padding "1 3" \
-        "✏️  Edit Template"
-    
-    # Get template name
-    template=$(gum input --placeholder="Enter template name to edit")
-    
-    if [[ -n "$template" ]]; then
-        if gum confirm "Edit template '$template'?"; then
-            # Show loading spinner
-            gum spin --title="Opening editor..." -- ./bin/mark template edit "$template"
-            gum style --foreground 46 "Template '$template' edited successfully!"
-        fi
-    else
-        gum style --foreground 196 "No template name provided"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    template_management_menu
-}
-
-delete_template_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 99 \
-        --align center \
-        --padding "1 3" \
-        "❌ Delete Template"
-    
-    # Get template name
-    template=$(gum input --placeholder="Enter template name to delete")
-    
-    if [[ -n "$template" ]]; then
-        if gum confirm "Are you sure you want to delete template '$template'? This action cannot be undone."; then
-            # Show loading spinner
-            gum spin --title="Deleting template..." -- ./bin/mark template delete "$template"
-            gum style --foreground 46 "Template '$template' deleted successfully!"
+    if is_interactive; then
+        if command -v gum &> /dev/null; then
+            gum input --placeholder="" --width=1 > /dev/null
         else
-            gum style --foreground 240 "Deletion cancelled"
+            read -p "" </dev/null
         fi
     else
-        gum style --foreground 196 "No template name provided"
+        read -p "" </dev/null
     fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    template_management_menu
 }
 
-rename_template_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 99 \
-        --align center \
-        --padding "1 3" \
-        "🔄 Rename Template"
-    
-    # Get old template name
-    old_name=$(gum input --placeholder="Enter current template name")
-    
-    if [[ -n "$old_name" ]]; then
-        # Get new template name
-        new_name=$(gum input --placeholder="Enter new template name")
-        
-        if [[ -n "$new_name" ]]; then
-            if gum confirm "Rename template '$old_name' to '$new_name'?"; then
-                # Show loading spinner
-                gum spin --title="Renaming template..." -- ./bin/mark template rename "$old_name" "$new_name"
-                gum style --foreground 46 "Template renamed successfully!"
-            else
-                gum style --foreground 240 "Rename cancelled"
-            fi
-        else
-            gum style --foreground 196 "No new template name provided"
-        fi
-    else
-        gum style --foreground 196 "No current template name provided"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    template_management_menu
-}
-
-# Prompt Generation Functions
-interactive_generate_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 220 \
-        --align center \
-        --padding "1 3" \
-        "✨ Interactive Generation Wizard"
-    
-    # Use the existing interactive generate command
-    if ./bin/mark generate interactive; then
-        gum style --foreground 46 "Prompt generated successfully!"
-    else
-        gum style --foreground 196 "Prompt generation failed"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    prompt_generation_menu
-}
-
-quick_generate_with_data_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 220 \
-        --align center \
-        --padding "1 3" \
-        "⚡ Quick Generate (with data)"
-    
-    # Get template name
-    template=$(gum input --placeholder="Enter template name")
-    
-    if [[ -n "$template" ]]; then
-        # Get data file
-        data_file=$(gum input --placeholder="Enter data file path (optional)")
-        
-        # Get output file
-        output_file=$(gum input --placeholder="Enter output file path (optional, leave empty for stdout)")
-        
-        if [[ -n "$output_file" ]]; then
-            # Show loading spinner
-            gum spin --title="Generating prompt..." -- ./bin/mark generate "$template" "$data_file" --out "$output_file"
-            gum style --foreground 46 "Prompt generated and saved to '$output_file'!"
-        else
-            # Show loading spinner
-            gum spin --title="Generating prompt..." --show-output -- ./bin/mark generate "$template" "$data_file"
-        fi
-    else
-        gum style --foreground 196 "No template name provided"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    prompt_generation_menu
-}
-
-quick_generate_no_data_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 220 \
-        --align center \
-        --padding "1 3" \
-        "🚀 Quick Generate (no data)"
-    
-    # Get template name
-    template=$(gum input --placeholder="Enter template name")
-    
-    if [[ -n "$template" ]]; then
-        # Get output file
-        output_file=$(gum input --placeholder="Enter output file path (optional, leave empty for stdout)")
-        
-        if [[ -n "$output_file" ]]; then
-            # Show loading spinner
-            gum spin --title="Generating prompt..." -- ./bin/mark generate "$template" --out "$output_file"
-            gum style --foreground 46 "Prompt generated and saved to '$output_file'!"
-        else
-            # Show loading spinner
-            gum spin --title="Generating prompt..." --show-output -- ./bin/mark generate "$template"
-        fi
-    else
-        gum style --foreground 196 "No template name provided"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    prompt_generation_menu
-}
-
-# Configuration Functions
-list_config_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 46 \
-        --align center \
-        --padding "1 3" \
-        "📋 Configuration Settings"
-    
-    # Show loading spinner
-    gum spin --title="Loading configuration..." --show-output -- ./bin/mark config list
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    configuration_menu
-}
-
-set_config_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 46 \
-        --align center \
-        --padding "1 3" \
-        "✏️  Set Configuration Value"
-    
-    # Get key
-    key=$(gum input --placeholder="Enter configuration key")
-    
-    if [[ -n "$key" ]]; then
-        # Get value
-        value=$(gum input --placeholder="Enter value for $key")
-        
-        if [[ -n "$value" ]]; then
-            # Show loading spinner
-            gum spin --title="Setting configuration..." -- ./bin/mark config set "$key" "$value"
-            gum style --foreground 46 "Configuration updated: $key=$value"
-        else
-            gum style --foreground 196 "No value provided"
-        fi
-    else
-        gum style --foreground 196 "No configuration key provided"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    configuration_menu
-}
-
-get_config_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 46 \
-        --align center \
-        --padding "1 3" \
-        "🔍 Get Configuration Value"
-    
-    # Get key
-    key=$(gum input --placeholder="Enter configuration key")
-    
-    if [[ -n "$key" ]]; then
-        # Show loading spinner
-        gum spin --title="Retrieving configuration..." --show-output -- ./bin/mark config get "$key"
-    else
-        gum style --foreground 196 "No configuration key provided"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    configuration_menu
-}
-
-reset_config_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 46 \
-        --align center \
-        --padding "1 3" \
-        "🔄 Reset Configuration"
-    
-    if gum confirm "Reset all configuration to defaults?"; then
-        # Show loading spinner
-        gum spin --title="Resetting configuration..." -- bash -c "rm -f ~/.mark/config.data 2>/dev/null || true"
-        gum style --foreground 46 "Configuration reset to defaults!"
-    else
-        gum style --foreground 240 "Reset cancelled"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    configuration_menu
-}
-
-# Help Functions
-show_main_help_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 201 \
-        --align center \
-        --padding "1 3" \
-        "📖 Main Help"
-    
-    # Show loading spinner
-    gum spin --title="Loading help..." --show-output -- ./bin/mark help
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    help_menu
-}
-
-show_commands_help_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 201 \
-        --align center \
-        --padding "1 3" \
-        "📘 Command Reference"
-    
-    # Get command
-    command=$(gum input --placeholder="Enter command name (generate, template, config, etc.)")
+# Show command-specific help
+show_command_help() {
+    local command="$1"
+    clear_screen
     
     if [[ -n "$command" ]]; then
-        # Show loading spinner
-        gum spin --title="Loading command help..." --show-output -- ./bin/mark help "$command"
-    else
-        gum style --foreground 196 "No command name provided"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    help_menu
-}
-
-show_tutorials_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 201 \
-        --align center \
-        --padding "1 3" \
-        "🎓 Tutorials"
-    
-    gum style --foreground 212 "Tutorials are available in the examples/tutorials directory."
-    echo ""
-    gum style --foreground 240 "You can run tutorials with: ./tests/run_tutorials.sh"
-    echo ""
-    gum style --foreground 33 "Documentation: https://github.com/AR-92/mark"
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    help_menu
-}
-
-show_about_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 201 \
-        --align center \
-        --padding "1 3" \
-        "❓ About mark"
-    
-    cat << 'EOF' | gum format
-# mark - AI Prompt Templating Tool
-
-**Version:** 1.0.0
-
-## Description
-`mark` is a powerful Bash-based tool for generating AI/MCP-ready prompts from templates with support for placeholders, file substitution, conditional blocks, and loops.
-
-## Features
-- **Placeholders**: `{{variable_name}}` for simple variable substitution
-- **File Substitution**: `{{@file_path}}` to include content from other files
-- **Conditional Blocks**: `{{#if condition}}...{{/if}}` for conditional content
-- **Loop Blocks**: `{{#each array}}...{{/each}}` for iterating over lists
-- **Template Management**: List, show, create, edit, delete, and rename templates
-- **Configuration Management**: Set, get, and list configuration options
-- **Interactive TUI**: Beautiful terminal interface with Gum integration
-
-## The Power of mark for AI Agents and Prompt Creation
-`mark` transforms how AI agents and developers create, manage, and deploy prompts by providing a robust templating system that enables:
-
-### 1. Dynamic Prompt Generation
-Generate thousands of unique prompts from a single template by varying input parameters.
-
-### 2. Modular Prompt Architecture
-Build complex, reusable prompt components that can be combined and nested.
-
-### 3. Context-Aware AI Agents
-Enable AI agents to dynamically construct prompts based on user context and preferences.
-
-### 4. Production-Ready Prompt Orchestration
-Deploy AI systems that generate prompts on-demand with error handling and validation.
-
-## Links
-- **Repository**: https://github.com/AR-92/mark
-- **Documentation**: See README.md for detailed information
-- **Issues**: Report bugs at https://github.com/AR-92/mark/issues
-EOF
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    help_menu
-}
-
-# System Functions
-upgrade_mark_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 202 \
-        --align center \
-        --padding "1 3" \
-        "🔄 Upgrade mark"
-    
-    if gum confirm "Upgrade mark to the latest version?"; then
-        # Show loading spinner
-        gum spin --title="Upgrading mark..." --show-output -- ./bin/mark upgrade
-        gum style --foreground 46 "mark upgraded successfully!"
-    else
-        gum style --foreground 240 "Upgrade cancelled"
-    fi
-    
-    echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    show_dashboard
-}
-
-uninstall_mark_tui() {
-    clear
-    
-    gum style \
-        --border rounded \
-        --border-foreground 196 \
-        --align center \
-        --padding "1 3" \
-        "🗑️  Uninstall mark"
-    
-    gum style --foreground 196 "🚨 WARNING: This will remove all mark components from your system!"
-    echo ""
-    
-    if gum confirm "Are you absolutely sure you want to uninstall mark?"; then
-        if gum confirm "This action cannot be undone. Continue?"; then
-            # Show loading spinner
-            gum spin --title="Uninstalling mark..." --show-output -- ./bin/mark uninstall
-            gum style --foreground 46 "mark uninstalled successfully!"
+        # Show specific command help
+        if command -v gum &> /dev/null; then
+            ./bin/mark help "$command" | gum format
         else
-            gum style --foreground 240 "Uninstall cancelled"
+            ./bin/mark help "$command"
         fi
     else
-        gum style --foreground 240 "Uninstall cancelled"
+        # Show main help if no command specified
+        if command -v gum &> /dev/null; then
+            ./bin/mark help | gum format
+        else
+            ./bin/mark help
+        fi
     fi
     
     echo ""
-    gum input --placeholder="Press Enter to continue..." --width=30 > /dev/null
-    show_dashboard
+    if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+        gum_info "Press Enter to continue..."
+    else
+        echo "Press Enter to continue..."
+    fi
+    if is_interactive; then
+        if command -v gum &> /dev/null; then
+            gum input --placeholder="" --width=1 > /dev/null
+        else
+            read -p "" </dev/null
+        fi
+    else
+        read -p "" </dev/null
+    fi
 }
 
-# Exit function
-exit_tui() {
-    clear
+# Show configuration management interface
+show_config_interface() {
+    clear_screen
     
-    gum style \
-        --border rounded \
-        --border-foreground 240 \
-        --align center \
-        --padding "1 3" \
-        "👋 Thank you for using mark!"
-    
-    gum style --foreground 240 "See you next time! 🚀"
+    if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+        gum_section "Configuration Management"
+    else
+        echo "Configuration Management"
+        echo "========================"
+    fi
     echo ""
-    exit 0
+    
+    # Check if config editor is available
+    if [[ -f "$LIB_DIR/utils/gum_config_editor.sh" ]]; then
+        source "$LIB_DIR/utils/gum_config_editor.sh"
+        # Use enhanced config editor
+        show_config_menu
+        return
+    fi
+    
+    # Fallback to simple menu for non-interactive mode
+    if is_interactive && command -v gum &> /dev/null; then
+        # Use Gum filter for interactive mode
+        if declare -f gum_filter_option >/dev/null; then
+            choice=$(gum_filter_option "Select configuration action..." \
+                "View Configuration" \
+                "Set Configuration Value" \
+                "Reset to Defaults" \
+                "Back to Main Menu")
+        else
+            OPTIONS=("View Configuration" "Set Configuration Value" "Reset to Defaults" "Back to Main Menu")
+            choice=$(printf '%s\n' "${OPTIONS[@]}" | gum filter --placeholder="Select configuration action...")
+        fi
+    else
+        # Use simple numbered menu for non-interactive mode
+        echo "1. View Configuration"
+        echo "2. Set Configuration Value"
+        echo "3. Reset to Defaults"
+        echo "4. Back to Main Menu"
+        echo ""
+        read -p "Select option (1-4): " choice_num </dev/null
+        case "$choice_num" in
+            1) choice="View Configuration" ;;
+            2) choice="Set Configuration Value" ;;
+            3) choice="Reset to Defaults" ;;
+            4) choice="Back to Main Menu" ;;
+            *) choice="Back to Main Menu" ;;
+        esac
+    fi
+    
+    case "$choice" in
+        "View Configuration")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Current Configuration"
+            else
+                echo "Current Configuration:"
+                echo "====================="
+            fi
+            echo ""
+            if command -v gum &> /dev/null; then
+                ./bin/mark config list | gum format
+            else
+                ./bin/mark config list
+            fi
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_config_interface
+            ;;
+        "Set Configuration Value")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Set Configuration Value"
+            else
+                echo "Set Configuration Value:"
+                echo "========================"
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_input_prompt >/dev/null; then
+                    key=$(gum_input_prompt "Enter configuration key (e.g., editor)")
+                else
+                    key=$(gum input --placeholder="Enter configuration key (e.g., editor)")
+                fi
+            else
+                read -p "Enter configuration key (e.g., editor): " key </dev/null
+            fi
+            
+            if [[ -n "$key" ]]; then
+                if is_interactive && command -v gum &> /dev/null; then
+                    if declare -f gum_input_prompt >/dev/null; then
+                        value=$(gum_input_prompt "Enter value for $key")
+                    else
+                        value=$(gum input --placeholder="Enter value for $key")
+                    fi
+                else
+                    read -p "Enter value for $key: " value </dev/null
+                fi
+                
+                if [[ -n "$value" ]]; then
+                    # Set configuration
+                    ./bin/mark config set "$key" "$value"
+                    if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                        gum_success "Configuration updated: $key=$value"
+                    else
+                        echo "Configuration updated: $key=$value"
+                    fi
+                else
+                    if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                        gum_error "No value provided"
+                    else
+                        echo "No value provided"
+                    fi
+                fi
+            else
+                if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                    gum_error "No key provided"
+                else
+                    echo "No key provided"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_config_interface
+            ;;
+        "Reset to Defaults")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Reset Configuration"
+            else
+                echo "Reset Configuration:"
+                echo "==================="
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_confirm_action >/dev/null; then
+                    if gum_confirm_action "Reset all configuration to defaults?"; then
+                        # Reset configuration
+                        rm -f ~/.mark/config.data 2>/dev/null || true
+                        if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                            gum_success "Configuration reset to defaults!"
+                        else
+                            echo "Configuration reset to defaults!"
+                        fi
+                    else
+                        if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                            gum_info "Reset cancelled"
+                        else
+                            echo "Reset cancelled"
+                        fi
+                    fi
+                else
+                    if gum confirm "Reset all configuration to defaults?"; then
+                        # Reset configuration
+                        rm -f ~/.mark/config.data 2>/dev/null || true
+                        if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                            gum_success "Configuration reset to defaults!"
+                        else
+                            echo "Configuration reset to defaults!"
+                        fi
+                    else
+                        if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                            gum_info "Reset cancelled"
+                        else
+                            echo "Reset cancelled"
+                        fi
+                    fi
+                fi
+            else
+                echo "Reset all configuration to defaults? (y/N)"
+                read -p "" reset_conf </dev/null
+                if [[ "$reset_conf" =~ ^[Yy]$ ]]; then
+                    rm -f ~/.mark/config.data 2>/dev/null || true
+                    echo "Configuration reset to defaults!"
+                else
+                    echo "Reset cancelled"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_config_interface
+            ;;
+        "Back to Main Menu"|*)
+            show_main_menu
+            ;;
+    esac
+}
+
+# Show template management interface
+show_template_interface() {
+    clear_screen
+    
+    if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+        gum_section "Template Management"
+    else
+        echo "Template Management"
+        echo "==================="
+    fi
+    echo ""
+    
+    # Check if template editor is available
+    if [[ -f "$LIB_DIR/utils/gum_template_editor.sh" ]]; then
+        source "$LIB_DIR/utils/gum_template_editor.sh"
+        # Use enhanced template editor
+        show_template_menu
+        return
+    fi
+    
+    # Fallback to simple menu for non-interactive mode
+    if is_interactive && command -v gum &> /dev/null; then
+        # Use Gum filter for interactive mode
+        if declare -f gum_filter_option >/dev/null; then
+            choice=$(gum_filter_option "Select template action..." \
+                "List Templates" \
+                "View Template" \
+                "Create Template" \
+                "Edit Template" \
+                "Delete Template" \
+                "Back to Main Menu")
+        else
+            OPTIONS=("List Templates" "View Template" "Create Template" "Edit Template" "Delete Template" "Back to Main Menu")
+            choice=$(printf '%s\n' "${OPTIONS[@]}" | gum filter --placeholder="Select template action...")
+        fi
+    else
+        # Use simple numbered menu for non-interactive mode
+        echo "1. List Templates"
+        echo "2. View Template"
+        echo "3. Create Template"
+        echo "4. Edit Template"
+        echo "5. Delete Template"
+        echo "6. Back to Main Menu"
+        echo ""
+        read -p "Select option (1-6): " choice_num </dev/null
+        case "$choice_num" in
+            1) choice="List Templates" ;;
+            2) choice="View Template" ;;
+            3) choice="Create Template" ;;
+            4) choice="Edit Template" ;;
+            5) choice="Delete Template" ;;
+            6) choice="Back to Main Menu" ;;
+            *) choice="Back to Main Menu" ;;
+        esac
+    fi
+    
+    case "$choice" in
+        "List Templates")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Available Templates"
+            else
+                echo "Available Templates:"
+                echo "===================="
+            fi
+            echo ""
+            # Show loading spinner
+            if command -v gum &> /dev/null; then
+                if declare -f gum_loading_output >/dev/null; then
+                    gum_loading_output "Loading templates..." ./bin/mark template list
+                else
+                    gum spin --title="Loading templates..." --show-output -- ./bin/mark template list
+                fi
+            else
+                echo "Loading templates..."
+                ./bin/mark template list
+            fi
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_template_interface
+            ;;
+        "View Template")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "View Template"
+            else
+                echo "View Template:"
+                echo "=============="
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_input_prompt >/dev/null; then
+                    template=$(gum_input_prompt "Enter template name")
+                else
+                    template=$(gum input --placeholder="Enter template name")
+                fi
+            else
+                read -p "Enter template name: " template </dev/null
+            fi
+            
+            if [[ -n "$template" ]]; then
+                echo ""
+                # Show loading spinner
+                if command -v gum &> /dev/null; then
+                    if declare -f gum_loading_output >/dev/null; then
+                        gum_loading_output "Loading template..." ./bin/mark template show "$template"
+                    else
+                        gum spin --title="Loading template..." --show-output -- ./bin/mark template show "$template"
+                    fi
+                else
+                    echo "Loading template..."
+                    ./bin/mark template show "$template"
+                fi
+            else
+                if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                    gum_error "No template name provided"
+                else
+                    echo "No template name provided"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_template_interface
+            ;;
+        "Create Template")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Create Template"
+            else
+                echo "Create Template:"
+                echo "================"
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_input_prompt >/dev/null; then
+                    template=$(gum_input_prompt "Enter template name (e.g., my_template.md)")
+                else
+                    template=$(gum input --placeholder="Enter template name (e.g., my_template.md)")
+                fi
+            else
+                read -p "Enter template name (e.g., my_template.md): " template </dev/null
+            fi
+            
+            if [[ -n "$template" ]]; then
+                # Create template
+                if ./bin/mark template new "$template"; then
+                    if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                        gum_success "Template '$template' created successfully!"
+                    else
+                        echo "Template '$template' created successfully!"
+                    fi
+                    
+                    # Ask if user wants to edit
+                    echo ""
+                    if is_interactive && command -v gum &> /dev/null; then
+                        if declare -f gum_confirm_action >/dev/null; then
+                            if gum_confirm_action "Edit the new template now?"; then
+                                # Try to edit with nvim/vim
+                                if command -v nvim &> /dev/null; then
+                                    nvim "$HOME/.mark/templates/$template" 2>/dev/null || vim "$HOME/.mark/templates/$template"
+                                elif command -v vim &> /dev/null; then
+                                    vim "$HOME/.mark/templates/$template"
+                                else
+                                    echo "No editor found. Edit template manually at: $HOME/.mark/templates/$template"
+                                fi
+                            fi
+                        else
+                            if gum confirm "Edit the new template now?"; then
+                                # Try to edit with nvim/vim
+                                if command -v nvim &> /dev/null; then
+                                    nvim "$HOME/.mark/templates/$template" 2>/dev/null || vim "$HOME/.mark/templates/$template"
+                                elif command -v vim &> /dev/null; then
+                                    vim "$HOME/.mark/templates/$template"
+                                else
+                                    echo "No editor found. Edit template manually at: $HOME/.mark/templates/$template"
+                                fi
+                            fi
+                        fi
+                    else
+                        echo "Edit the new template now? (y/N)"
+                        read -p "" edit_now </dev/null
+                        if [[ "$edit_now" =~ ^[Yy]$ ]]; then
+                            # Try to edit with nvim/vim
+                            if command -v nvim &> /dev/null; then
+                                nvim "$HOME/.mark/templates/$template" 2>/dev/null || vim "$HOME/.mark/templates/$template"
+                            elif command -v vim &> /dev/null; then
+                                vim "$HOME/.mark/templates/$template"
+                            else
+                                echo "No editor found. Edit template manually at: $HOME/.mark/templates/$template"
+                            fi
+                        fi
+                    fi
+                else
+                    if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                        gum_error "Failed to create template"
+                    else
+                        echo "Failed to create template"
+                    fi
+                fi
+            else
+                if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                    gum_error "No template name provided"
+                else
+                    echo "No template name provided"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_template_interface
+            ;;
+        "Edit Template")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Edit Template"
+            else
+                echo "Edit Template:"
+                echo "==============="
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_input_prompt >/dev/null; then
+                    template=$(gum_input_prompt "Enter template name")
+                else
+                    template=$(gum input --placeholder="Enter template name")
+                fi
+            else
+                read -p "Enter template name: " template </dev/null
+            fi
+            
+            if [[ -n "$template" ]]; then
+                if is_interactive && command -v gum &> /dev/null; then
+                    if declare -f gum_confirm_action >/dev/null; then
+                        if gum_confirm_action "Edit template '$template' with nvim/vim?"; then
+                            # Try to edit with nvim/vim
+                            if command -v nvim &> /dev/null; then
+                                nvim "$HOME/.mark/templates/$template" 2>/dev/null || vim "$HOME/.mark/templates/$template"
+                            elif command -v vim &> /dev/null; then
+                                vim "$HOME/.mark/templates/$template"
+                            else
+                                echo "No editor found. Edit template manually at: $HOME/.mark/templates/$template"
+                            fi
+                            if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                                gum_success "Template '$template' edited successfully!"
+                            else
+                                echo "Template '$template' edited successfully!"
+                            fi
+                        fi
+                    else
+                        if gum confirm "Edit template '$template' with nvim/vim?"; then
+                            # Try to edit with nvim/vim
+                            if command -v nvim &> /dev/null; then
+                                nvim "$HOME/.mark/templates/$template" 2>/dev/null || vim "$HOME/.mark/templates/$template"
+                            elif command -v vim &> /dev/null; then
+                                vim "$HOME/.mark/templates/$template"
+                            else
+                                echo "No editor found. Edit template manually at: $HOME/.mark/templates/$template"
+                            fi
+                            if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                                gum_success "Template '$template' edited successfully!"
+                            else
+                                echo "Template '$template' edited successfully!"
+                            fi
+                        fi
+                    fi
+                else
+                    echo "Edit template '$template' with nvim/vim? (y/N)"
+                    read -p "" edit_template </dev/null
+                    if [[ "$edit_template" =~ ^[Yy]$ ]]; then
+                        # Try to edit with nvim/vim
+                        if command -v nvim &> /dev/null; then
+                            nvim "$HOME/.mark/templates/$template" 2>/dev/null || vim "$HOME/.mark/templates/$template"
+                        elif command -v vim &> /dev/null; then
+                            vim "$HOME/.mark/templates/$template"
+                        else
+                            echo "No editor found. Edit template manually at: $HOME/.mark/templates/$template"
+                        fi
+                        echo "Template '$template' edited successfully!"
+                    fi
+                fi
+            else
+                if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                    gum_error "No template name provided"
+                else
+                    echo "No template name provided"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_template_interface
+            ;;
+        "Delete Template")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Delete Template"
+            else
+                echo "Delete Template:"
+                echo "================"
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_input_prompt >/dev/null; then
+                    template=$(gum_input_prompt "Enter template name")
+                else
+                    template=$(gum input --placeholder="Enter template name")
+                fi
+            else
+                read -p "Enter template name: " template </dev/null
+            fi
+            
+            if [[ -n "$template" ]]; then
+                if is_interactive && command -v gum &> /dev/null; then
+                    if declare -f gum_confirm_action >/dev/null; then
+                        if gum_confirm_action "Delete template '$template'? This cannot be undone."; then
+                            # Delete template
+                            ./bin/mark template delete "$template"
+                            if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                                gum_success "Template '$template' deleted successfully!"
+                            else
+                                echo "Template '$template' deleted successfully!"
+                            fi
+                        else
+                            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                                gum_info "Deletion cancelled"
+                            else
+                                echo "Deletion cancelled"
+                            fi
+                        fi
+                    else
+                        if gum confirm "Delete template '$template'? This cannot be undone."; then
+                            # Delete template
+                            ./bin/mark template delete "$template"
+                            if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                                gum_success "Template '$template' deleted successfully!"
+                            else
+                                echo "Template '$template' deleted successfully!"
+                            fi
+                        else
+                            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                                gum_info "Deletion cancelled"
+                            else
+                                echo "Deletion cancelled"
+                            fi
+                        fi
+                    fi
+                else
+                    echo "Delete template '$template'? This cannot be undone. (y/N)"
+                    read -p "" delete_template </dev/null
+                    if [[ "$delete_template" =~ ^[Yy]$ ]]; then
+                        # Delete template
+                        ./bin/mark template delete "$template"
+                        echo "Template '$template' deleted successfully!"
+                    else
+                        echo "Deletion cancelled"
+                    fi
+                fi
+            else
+                if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                    gum_error "No template name provided"
+                else
+                    echo "No template name provided"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_template_interface
+            ;;
+        "Back to Main Menu"|*)
+            show_main_menu
+            ;;
+    esac
+}
+
+# Show prompt generation interface
+show_generate_interface() {
+    clear_screen
+    
+    if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+        gum_section "Prompt Generation"
+    else
+        echo "Prompt Generation"
+        echo "================="
+    fi
+    echo ""
+    
+    # Use simple menu for non-interactive mode
+    if is_interactive && command -v gum &> /dev/null; then
+        # Use Gum filter for interactive mode
+        if declare -f gum_filter_option >/dev/null; then
+            choice=$(gum_filter_option "Select generation action..." \
+                "Generate from Template" \
+                "Interactive Generation" \
+                "View Recent Prompts" \
+                "Back to Main Menu")
+        else
+            OPTIONS=("Generate from Template" "Interactive Generation" "View Recent Prompts" "Back to Main Menu")
+            choice=$(printf '%s\n' "${OPTIONS[@]}" | gum filter --placeholder="Select generation action...")
+        fi
+    else
+        # Use simple numbered menu for non-interactive mode
+        echo "1. Generate from Template"
+        echo "2. Interactive Generation"
+        echo "3. View Recent Prompts"
+        echo "4. Back to Main Menu"
+        echo ""
+        read -p "Select option (1-4): " choice_num </dev/null
+        case "$choice_num" in
+            1) choice="Generate from Template" ;;
+            2) choice="Interactive Generation" ;;
+            3) choice="View Recent Prompts" ;;
+            4) choice="Back to Main Menu" ;;
+            *) choice="Back to Main Menu" ;;
+        esac
+    fi
+    
+    case "$choice" in
+        "Generate from Template")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Generate from Template"
+            else
+                echo "Generate from Template:"
+                echo "======================="
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_input_prompt >/dev/null; then
+                    template=$(gum_input_prompt "Enter template name")
+                else
+                    template=$(gum input --placeholder="Enter template name")
+                fi
+            else
+                read -p "Enter template name: " template </dev/null
+            fi
+            
+            if [[ -n "$template" ]]; then
+                echo ""
+                if is_interactive && command -v gum &> /dev/null; then
+                    if declare -f gum_input_prompt >/dev/null; then
+                        data_file=$(gum_input_prompt "Enter data file path (optional)")
+                    else
+                        data_file=$(gum input --placeholder="Enter data file path (optional)")
+                    fi
+                else
+                    read -p "Enter data file path (optional): " data_file </dev/null
+                fi
+                
+                echo ""
+                if is_interactive && command -v gum &> /dev/null; then
+                    if declare -f gum_input_prompt >/dev/null; then
+                        output_file=$(gum_input_prompt "Enter output file path (optional, leave empty for stdout)")
+                    else
+                        output_file=$(gum input --placeholder="Enter output file path (optional, leave empty for stdout)")
+                    fi
+                else
+                    read -p "Enter output file path (optional, leave empty for stdout): " output_file </dev/null
+                fi
+                
+                echo ""
+                # Generate prompt
+                if [[ -n "$output_file" ]]; then
+                    # Show loading spinner
+                    if command -v gum &> /dev/null; then
+                        if declare -f gum_loading >/dev/null; then
+                            gum_loading "Generating prompt..." ./bin/mark generate "$template" "$data_file" --out "$output_file"
+                        else
+                            gum spin --title="Generating prompt..." -- ./bin/mark generate "$template" "$data_file" --out "$output_file"
+                        fi
+                        if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                            gum_success "Prompt generated and saved to '$output_file'!"
+                        else
+                            echo "Prompt generated and saved to '$output_file'!"
+                        fi
+                    else
+                        echo "Generating prompt..."
+                        ./bin/mark generate "$template" "$data_file" --out "$output_file"
+                        echo "Prompt generated and saved to '$output_file'!"
+                    fi
+                else
+                    # Show loading spinner
+                    if command -v gum &> /dev/null; then
+                        if declare -f gum_loading_output >/dev/null; then
+                            gum_loading_output "Generating prompt..." ./bin/mark generate "$template" "$data_file"
+                        else
+                            gum spin --title="Generating prompt..." --show-output -- ./bin/mark generate "$template" "$data_file"
+                        fi
+                    else
+                        echo "Generating prompt..."
+                        ./bin/mark generate "$template" "$data_file"
+                    fi
+                fi
+            else
+                if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                    gum_error "No template name provided"
+                else
+                    echo "No template name provided"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_generate_interface
+            ;;
+        "Interactive Generation")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Interactive Generation"
+            else
+                echo "Interactive Generation:"
+                echo "======================="
+            fi
+            echo ""
+            
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Launching interactive prompt generation..."
+            else
+                echo "Launching interactive prompt generation..."
+            fi
+            echo ""
+            ./bin/mark generate interactive
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_generate_interface
+            ;;
+        "View Recent Prompts")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Recent Prompts"
+            else
+                echo "Recent Prompts:"
+                echo "==============="
+            fi
+            echo ""
+            # Show recent prompts
+            if command -v gum &> /dev/null; then
+                ./bin/mark list | gum format
+            else
+                ./bin/mark list
+            fi
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_generate_interface
+            ;;
+        "Back to Main Menu"|*)
+            show_main_menu
+            ;;
+    esac
+}
+
+# Show main menu
+show_main_menu() {
+    clear_screen
+    
+    # Show main menu with consistent styling
+    if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+        gum_section "Main Menu"
+    else
+        gum style --bold "Main Menu"
+        echo "========="
+    fi
+    echo ""
+    
+    # Welcome message
+    if command -v gum &> /dev/null; then
+        gum style --foreground 240 "Welcome to mark - AI Prompt Templating Tool"
+        echo ""
+    else
+        echo "Welcome to mark - AI Prompt Templating Tool"
+        echo ""
+    fi
+    
+    # Use simple menu for non-interactive mode
+    if is_interactive && command -v gum &> /dev/null; then
+        # Use Gum choose for interactive mode with better formatting
+        choice=$(gum choose \
+            --cursor="▶ " \
+            --selected="◉ " \
+            "📝 Help" \
+            "⚡ Generate Prompt" \
+            "📁 Template Management" \
+            "⚙️  Configuration" \
+            "🔄 Upgrade" \
+            "🗑️  Uninstall" \
+            "🚪 Exit")
+    else
+        # Use simple numbered menu for non-interactive mode
+        echo "1. 📝 Help"
+        echo "2. ⚡ Generate Prompt"
+        echo "3. 📁 Template Management"
+        echo "4. ⚙️  Configuration"
+        echo "5. 🔄 Upgrade"
+        echo "6. 🗑️  Uninstall"
+        echo "7. 🚪 Exit"
+        echo ""
+        echo "💡 Use number keys to select an option"
+        read -p "Select option (1-7): " choice_num </dev/null
+        case "$choice_num" in
+            1) choice="📝 Help" ;;
+            2) choice="⚡ Generate Prompt" ;;
+            3) choice="📁 Template Management" ;;
+            4) choice="⚙️  Configuration" ;;
+            5) choice="🔄 Upgrade" ;;
+            6) choice="🗑️  Uninstall" ;;
+            7) choice="🚪 Exit" ;;
+            *) choice="🚪 Exit" ;;
+        esac
+    fi
+}
+    
+    case "$choice" in
+        "📝 Help")
+            show_main_help
+            ;;
+        "⚡ Generate Prompt")
+            show_generate_interface
+            ;;
+        "📁 Template Management")
+            show_template_interface
+            ;;
+        "⚙️  Configuration")
+            show_config_interface
+            ;;
+        "🔄 Upgrade")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Upgrade mark"
+            else
+                echo "Upgrade mark:"
+                echo "============"
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_confirm_action >/dev/null; then
+                    if gum_confirm_action "Upgrade mark to the latest version?"; then
+                        # Show loading spinner
+                        if command -v gum &> /dev/null; then
+                            if declare -f gum_loading_output >/dev/null; then
+                                gum_loading_output "Upgrading mark..." ./bin/mark upgrade
+                            else
+                                gum spin --title="Upgrading mark..." --show-output -- ./bin/mark upgrade
+                            fi
+                            if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                                gum_success "mark upgraded successfully!"
+                            else
+                                echo "mark upgraded successfully!"
+                            fi
+                        else
+                            echo "Upgrading mark..."
+                            ./bin/mark upgrade
+                            echo "mark upgraded successfully!"
+                        fi
+                    else
+                        if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                            gum_info "Upgrade cancelled"
+                        else
+                            echo "Upgrade cancelled"
+                        fi
+                    fi
+                else
+                    if gum confirm "Upgrade mark to the latest version?"; then
+                        # Show loading spinner
+                        if command -v gum &> /dev/null; then
+                            if declare -f gum_loading_output >/dev/null; then
+                                gum_loading_output "Upgrading mark..." ./bin/mark upgrade
+                            else
+                                gum spin --title="Upgrading mark..." --show-output -- ./bin/mark upgrade
+                            fi
+                            if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                                gum_success "mark upgraded successfully!"
+                            else
+                                echo "mark upgraded successfully!"
+                            fi
+                        else
+                            echo "Upgrading mark..."
+                            ./bin/mark upgrade
+                            echo "mark upgraded successfully!"
+                        fi
+                    else
+                        if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                            gum_info "Upgrade cancelled"
+                        else
+                            echo "Upgrade cancelled"
+                        fi
+                    fi
+                fi
+            else
+                echo "Upgrade mark to the latest version? (y/N)"
+                read -p "" upgrade_mark </dev/null
+                if [[ "$upgrade_mark" =~ ^[Yy]$ ]]; then
+                    # Show loading spinner
+                    if command -v gum &> /dev/null; then
+                        if declare -f gum_loading_output >/dev/null; then
+                            gum_loading_output "Upgrading mark..." ./bin/mark upgrade
+                        else
+                            gum spin --title="Upgrading mark..." --show-output -- ./bin/mark upgrade
+                        fi
+                        echo "mark upgraded successfully!"
+                    else
+                        echo "Upgrading mark..."
+                        ./bin/mark upgrade
+                        echo "mark upgraded successfully!"
+                    fi
+                else
+                    echo "Upgrade cancelled"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_main_menu
+            ;;
+        "🗑️  Uninstall")
+            clear_screen
+            if declare -f gum_section >/dev/null && command -v gum &> /dev/null; then
+                gum_section "Uninstall mark"
+            else
+                echo "Uninstall mark:"
+                echo "==============="
+            fi
+            echo ""
+            
+            if declare -f gum_error >/dev/null && command -v gum &> /dev/null; then
+                gum_error "🚨 WARNING: This will remove all mark components from your system!"
+            else
+                echo "🚨 WARNING: This will remove all mark components from your system!"
+            fi
+            echo ""
+            
+            if is_interactive && command -v gum &> /dev/null; then
+                if declare -f gum_confirm_action >/dev/null; then
+                    if gum_confirm_action "Are you absolutely sure you want to uninstall mark?"; then
+                        if gum_confirm_action "This action cannot be undone. Continue?"; then
+                            # Show loading spinner
+                            if command -v gum &> /dev/null; then
+                                if declare -f gum_loading_output >/dev/null; then
+                                    gum_loading_output "Uninstalling mark..." ./bin/mark uninstall
+                                else
+                                    gum spin --title="Uninstalling mark..." --show-output -- ./bin/mark uninstall
+                                fi
+                                if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                                    gum_success "mark uninstalled successfully!"
+                                else
+                                    echo "mark uninstalled successfully!"
+                                fi
+                            else
+                                echo "Uninstalling mark..."
+                                ./bin/mark uninstall
+                                echo "mark uninstalled successfully!"
+                            fi
+                        else
+                            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                                gum_info "Uninstall cancelled"
+                            else
+                                echo "Uninstall cancelled"
+                            fi
+                        fi
+                    else
+                        if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                            gum_info "Uninstall cancelled"
+                        else
+                            echo "Uninstall cancelled"
+                        fi
+                    fi
+                else
+                    if gum confirm "Are you absolutely sure you want to uninstall mark?"; then
+                        if gum confirm "This action cannot be undone. Continue?"; then
+                            # Show loading spinner
+                            if command -v gum &> /dev/null; then
+                                if declare -f gum_loading_output >/dev/null; then
+                                    gum_loading_output "Uninstalling mark..." ./bin/mark uninstall
+                                else
+                                    gum spin --title="Uninstalling mark..." --show-output -- ./bin/mark uninstall
+                                fi
+                                if declare -f gum_success >/dev/null && command -v gum &> /dev/null; then
+                                    gum_success "mark uninstalled successfully!"
+                                else
+                                    echo "mark uninstalled successfully!"
+                                fi
+                            else
+                                echo "Uninstalling mark..."
+                                ./bin/mark uninstall
+                                echo "mark uninstalled successfully!"
+                            fi
+                        else
+                            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                                gum_info "Uninstall cancelled"
+                            else
+                                echo "Uninstall cancelled"
+                            fi
+                        fi
+                    else
+                        if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                            gum_info "Uninstall cancelled"
+                        else
+                            echo "Uninstall cancelled"
+                        fi
+                    fi
+                fi
+            else
+                echo "Are you absolutely sure you want to uninstall mark? (y/N)"
+                read -p "" uninstall_mark </dev/null
+                if [[ "$uninstall_mark" =~ ^[Yy]$ ]]; then
+                    echo "This action cannot be undone. Continue? (y/N)"
+                    read -p "" confirm_uninstall </dev/null
+                    if [[ "$confirm_uninstall" =~ ^[Yy]$ ]]; then
+                        # Show loading spinner
+                        if command -v gum &> /dev/null; then
+                            if declare -f gum_loading_output >/dev/null; then
+                                gum_loading_output "Uninstalling mark..." ./bin/mark uninstall
+                            else
+                                gum spin --title="Uninstalling mark..." --show-output -- ./bin/mark uninstall
+                            fi
+                            echo "mark uninstalled successfully!"
+                        else
+                            echo "Uninstalling mark..."
+                            ./bin/mark uninstall
+                            echo "mark uninstalled successfully!"
+                        fi
+                    else
+                        echo "Uninstall cancelled"
+                    fi
+                else
+                    echo "Uninstall cancelled"
+                fi
+            fi
+            
+            echo ""
+            if declare -f gum_info >/dev/null && command -v gum &> /dev/null; then
+                gum_info "Press Enter to continue..."
+            else
+                echo "Press Enter to continue..."
+            fi
+            if is_interactive; then
+                if command -v gum &> /dev/null; then
+                    gum input --placeholder="" --width=1 > /dev/null
+                else
+                    read -p "" </dev/null
+                fi
+            else
+                read -p "" </dev/null
+            fi
+            show_main_menu
+            ;;
+        "🚪 Exit"|*)
+            clear_screen
+            if command -v gum &> /dev/null; then
+                gum style --align center --bold "Thank you for using mark!"
+                gum style --align center "Happy prompting! 🚀"
+            else
+                echo "Thank you for using mark!"
+                echo "Happy prompting! 🚀"
+            fi
+            echo ""
+            exit 0
+            ;;
+    esac
 }
 
 # Main function
@@ -815,8 +1338,8 @@ main() {
     # Check if Gum is installed
     check_gum
     
-    # Show the main dashboard
-    show_dashboard
+    # Show main menu
+    show_main_menu
 }
 
 # Run main function
