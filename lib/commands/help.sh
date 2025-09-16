@@ -243,7 +243,7 @@ show_detailed_help() {
             echo "    Run setup_gum.sh if Gum is not installed."
             echo ""
             echo "FEATURES:"
-            echo "    • Clean layout without border boxes"
+            echo "    • Completely box-free interface for a modern, clean appearance"
             echo "    • Solarized blue color scheme"
             echo "    • Enhanced visual elements with animations"
             echo "    • Improved navigation flow with breadcrumbs"

@@ -441,7 +441,7 @@ Opens a beautiful, interactive TUI dashboard that provides a complete graphical 
 
 ## 🌟 FEATURES
 
-- Clean layout without border boxes
+- **Completely box-free interface** for a modern, clean appearance
 - Solarized blue color scheme
 - Enhanced visual elements with animations
 - Improved navigation flow with breadcrumbs
